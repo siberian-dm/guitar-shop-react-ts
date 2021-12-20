@@ -1,6 +1,7 @@
 import { AppDataState, FetchState, ReducerName } from '../../../types/store';
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchGuitarsCardsAction } from '../../api-action';
+import { adaptDataToClient } from './adapter';
 
 const initialState: AppDataState = {
   guitarsCards: [],
@@ -22,7 +23,7 @@ const appDataSlice = createSlice({
         }
       })
       .addCase(fetchGuitarsCardsAction.fulfilled, (state, action) => {
-        state.guitarsCards = action.payload;
+        state.guitarsCards = adaptDataToClient(action.payload);
         state.fetchState = FetchState.Idle;
         state.currentRequestId = null;
         state.error = undefined;

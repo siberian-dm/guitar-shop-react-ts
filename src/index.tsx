@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { configureStore, unwrapResult } from '@reduxjs/toolkit';
 import { fetchGuitarsCardsAction } from './store/api-action';
 import { Provider } from 'react-redux';
-import { rootReducer } from './store/root-reducer';
+import { rootReducer } from './store/reducers/root-reducer';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

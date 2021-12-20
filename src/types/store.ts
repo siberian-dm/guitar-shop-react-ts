@@ -1,5 +1,5 @@
 import { GuitarCards } from './app-data';
-import { rootReducer } from '../store/root-reducer';
+import { rootReducer } from '../store/reducers/root-reducer';
 
 export enum ReducerName {
   App = 'APP',
