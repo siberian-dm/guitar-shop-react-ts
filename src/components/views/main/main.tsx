@@ -6,10 +6,13 @@ import Header from '../../common/header/header';
 import Pagination from './pagination/pagination';
 import ProductCard from './product-card/product-card';
 import SvgBasket from '../../common/svg-basket/svg-basket';
-import { nanoid } from '@reduxjs/toolkit';
+import { getGuitarsCards } from '../../../store/reducers/app-data-reducer/selectors';
+import { useSelector } from 'react-redux';
+
+const PAGE_SIZE = 9;
 
 function Main(): JSX.Element {
-  const productCards = new Array(9).fill(null).map(() => ({id: nanoid()}));
+  const guitarCards = useSelector(getGuitarsCards).slice(0, PAGE_SIZE);
 
   return (
     <>
@@ -26,7 +29,9 @@ function Main(): JSX.Element {
               <FilterForm />
               <CatalogSort />
               <div className="cards catalog__cards">
-                {productCards.map(({ id }) => <ProductCard key={id}/>)}
+                {guitarCards.length !==0 && (
+                  guitarCards.map((card) => <ProductCard key={card.id} card={card}/>)
+                )}
               </div>
               <Pagination />
             </div>

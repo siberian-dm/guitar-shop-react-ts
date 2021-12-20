@@ -1,32 +1,40 @@
-function ProductCard(): JSX.Element {
+import { formatPrice } from '../../../../utils/common';
+import { Guitar } from '../../../../types/app-data';
+
+const RATES = [1, 2, 3, 4, 5];
+
+type Props = {
+  card: Guitar;
+}
+
+function ProductCard({ card }: Props): JSX.Element {
+  const {
+    name,
+    previewImg,
+    price,
+    rating,
+  } = card;
+
+  const roundRating = Math.round(rating);
+
   return (
     <div className="product-card">
-      <img src="img/content/guitar-2.jpg" width="75" height="190" alt="СURT Z30 Plus Acoustics"/>
+      <img src={previewImg} width="75" height="190" alt={name}/>
       <div className="product-card__info">
         <div className="rate product-card__rate" aria-hidden="true">
           <span className="visually-hidden">Рейтинг:</span>
-          <svg width="12" height="11" aria-hidden="true">
-            <use xlinkHref="#icon-full-star"/>
-          </svg>
-          <svg width="12" height="11" aria-hidden="true">
-            <use xlinkHref="#icon-full-star"/>
-          </svg>
-          <svg width="12" height="11" aria-hidden="true">
-            <use xlinkHref="#icon-full-star"/>
-          </svg>
-          <svg width="12" height="11" aria-hidden="true">
-            <use xlinkHref="#icon-full-star"/>
-          </svg>
-          <svg width="12" height="11" aria-hidden="true">
-            <use xlinkHref="#icon-star"/>
-          </svg>
+          {RATES.map((value) => (
+            <svg width="12" height="11" aria-hidden="true" key={value}>
+              <use xlinkHref={value <= roundRating ? '#icon-full-star' : '#icon-star'}/>
+            </svg>
+          ))}
           <span className="rate__count">9</span><span className="rate__message"/>
         </div>
         <p className="product-card__title">
-          СURT Z30 Plus Acoustics
+          {name}
         </p>
         <p className="product-card__price">
-          <span className="visually-hidden">Цена:</span>129 500 ₽
+          <span className="visually-hidden">Цена:</span>{formatPrice(price)}
         </p>
       </div>
       <div className="product-card__buttons">
