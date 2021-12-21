@@ -16,7 +16,7 @@ function App(): JSX.Element {
         <Route path={AppRoute.Root} exact>
           <Main />
         </Route>
-        <Route path={AppRoute.ProductPage} exact>
+        <Route path={AppRoute.ProductById} exact>
           <Product />
         </Route>
         <Route path={AppRoute.NotFound} exact>

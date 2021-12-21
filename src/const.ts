@@ -1,5 +1,6 @@
 export enum AppRoute {
   Root = '/',
-  ProductPage = '/product/:id',
+  Product = '/product',
+  ProductById = '/product/:id',
   NotFound = '/not-found'
 }
