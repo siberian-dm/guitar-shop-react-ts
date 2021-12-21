@@ -1,12 +1,12 @@
 import { ActionType } from '../types/action';
 import { APIRoute, createAPI } from '../services/api';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { FetchState, ReducerName, RootState } from '../types/store';
-import { GuitarCards } from '../types/app-data';
+import { FetchState, ReducerName, TRootState } from '../types/store';
+import { TGuitarCards } from '../types/app-data';
 
 const api = createAPI();
 
-export const fetchGuitarsCardsAction = createAsyncThunk<GuitarCards, void, {state: RootState}>(
+export const fetchGuitarsCardsAction = createAsyncThunk<TGuitarCards, void, {state: TRootState}>(
   ActionType.FetchGuitarsCards,
   async (_arg, { getState, requestId }) => {
     const { currentRequestId, fetchState } = getState()[ReducerName.App];

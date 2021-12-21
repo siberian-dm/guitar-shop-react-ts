@@ -1,5 +1,5 @@
-import { GuitarCards } from './app-data';
 import { rootReducer } from '../store/reducers/root-reducer';
+import { TGuitarCards } from './app-data';
 
 export enum ReducerName {
   App = 'APP',
@@ -10,11 +10,11 @@ export enum FetchState {
   Pending = 'pending',
 }
 
-export type AppDataState = {
-  guitarsCards: [] | GuitarCards;
+export type TAppDataState = {
+  guitarsCards: [] | TGuitarCards;
   fetchState: FetchState;
   currentRequestId: null | string,
   error: undefined | string,
 }
 
-export type RootState = ReturnType<typeof rootReducer>;
+export type TRootState = ReturnType<typeof rootReducer>;
