@@ -1,10 +1,13 @@
 import classNames from 'classnames';
 import styles from './search-form.module.css';
+import { AppRoute } from '../../../../const';
 import { ChangeEvent, useState } from 'react';
 import { getGuitarsCards } from '../../../../store/reducers/app-data-reducer/selectors';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 function SearchForm(): JSX.Element {
+  const history = useHistory();
   const guitars = useSelector(getGuitarsCards);
   const [query, setQuery] = useState('');
 
@@ -17,6 +20,10 @@ function SearchForm(): JSX.Element {
 
   const onSearchInputChange = (evt: ChangeEvent<HTMLInputElement>): void => {
     setQuery(evt.target.value);
+  };
+
+  const onSelectItemClick = (id: number) => (): void => {
+    history.push(`${AppRoute.Product}/${id}`);
   };
 
   const selectListClass = classNames(
@@ -53,6 +60,7 @@ function SearchForm(): JSX.Element {
               key={id}
               className="form-search__select-item"
               tabIndex={0}
+              onClick={onSelectItemClick(id)}
             >
               {name}
             </li>

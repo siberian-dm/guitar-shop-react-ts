@@ -1,9 +1,9 @@
-import { AppDataState, FetchState, ReducerName } from '../../../types/store';
+import { adaptDataToClient } from './adapter';
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchGuitarsCardsAction } from '../../api-action';
-import { adaptDataToClient } from './adapter';
+import { FetchState, ReducerName, TAppDataState } from '../../../types/store';
 
-const initialState: AppDataState = {
+const initialState: TAppDataState = {
   guitarsCards: [],
   fetchState: FetchState.Idle,
   currentRequestId: null,

@@ -1,4 +1,4 @@
-import { GuitarCards } from '../../../types/app-data';
-import { ReducerName, RootState } from '../../../types/store';
+import { ReducerName, TRootState } from '../../../types/store';
+import { TGuitarCards } from '../../../types/app-data';
 
-export const getGuitarsCards = (state: RootState): GuitarCards => state[ReducerName.App].guitarsCards;
+export const getGuitarsCards = (state: TRootState): TGuitarCards => state[ReducerName.App].guitarsCards;

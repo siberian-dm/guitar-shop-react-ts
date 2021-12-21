@@ -1,4 +1,4 @@
-export type Guitar = {
+export type TGuitarCard = {
   id: number;
   name: string;
   vendorCode: string;
@@ -10,4 +10,4 @@ export type Guitar = {
   price: number;
 }
 
-export type GuitarCards = Guitar[];
+export type TGuitarCards = TGuitarCard[];
