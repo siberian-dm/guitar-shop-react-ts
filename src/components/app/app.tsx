@@ -1,4 +1,4 @@
-import Main from '../views/main/main';
+import Catalog from '../views/catalog/catalog';
 import NotFound from '../views/not-found/not-found';
 import Product from '../views/product/product';
 import { AppRoute } from '../../const';
@@ -14,7 +14,7 @@ function App(): JSX.Element {
     <BrowserRouter>
       <Switch>
         <Route path={AppRoute.Root} exact>
-          <Main />
+          <Catalog />
         </Route>
         <Route path={AppRoute.ProductById} exact>
           <Product />
