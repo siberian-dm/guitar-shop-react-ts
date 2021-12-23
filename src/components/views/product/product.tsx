@@ -7,6 +7,7 @@ import { APIRoute } from '../../../services/api';
 import { AppRoute } from '../../../const';
 import { Redirect, useParams } from 'react-router-dom';
 import { TGuitarCard } from '../../../types/app-data';
+import Loader from '../../common/loader/loader';
 
 const NOT_FOUND_STATUS_CODE = 404;
 
@@ -25,18 +26,20 @@ function Product(): JSX.Element {
 
   return (
     <MainLayout>
-      {isLoading ? <h1>Загрузка...</h1>
-        :
-        data !== null && (
-          <main className="page-content">
-            <div className="container">
-              <h1 className="page-content__title title title--bigger">Товар</h1>
-              <Breadcrumbs />
-              <ProductDetail data={data}/>
-              <Reviews />
-            </div>
-          </main>
-        )}
+      <main className="page-content">
+        <div className="container">
+          <h1 className="page-content__title title title--bigger">Товар</h1>
+          <Breadcrumbs />
+          {isLoading ? <Loader />
+            :
+            data !== null && (
+              <>
+                <ProductDetail data={data}/>
+                <Reviews />
+              </>
+            )}
+        </div>
+      </main>
     </MainLayout>
   );
 }
