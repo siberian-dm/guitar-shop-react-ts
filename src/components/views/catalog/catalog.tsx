@@ -5,7 +5,7 @@ import MainLayout from '../../common/main-layout/main-layout';
 import Pagination from './pagination/pagination';
 import ProductList from './propuct-list/product-list';
 
-function Main(): JSX.Element {
+function Catalog(): JSX.Element {
   return (
     <MainLayout>
       <main className="page-content">
@@ -24,4 +24,4 @@ function Main(): JSX.Element {
   );
 }
 
-export default Main;
+export default Catalog;
