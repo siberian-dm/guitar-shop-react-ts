@@ -23,15 +23,27 @@ const appDataSlice = createSlice({
         }
       })
       .addCase(fetchGuitarsCardsAction.fulfilled, (state, action) => {
-        state.guitarsCards = adaptDataToClient(action.payload);
-        state.fetchState = FetchState.Idle;
-        state.currentRequestId = null;
-        state.error = undefined;
+        const { requestId } = action.meta;
+        if (
+          state.fetchState === FetchState.Pending &&
+          state.currentRequestId === requestId
+        ) {
+          state.guitarsCards = adaptDataToClient(action.payload);
+          state.fetchState = FetchState.Idle;
+          state.currentRequestId = null;
+          state.error = undefined;
+        }
       })
       .addCase(fetchGuitarsCardsAction.rejected, (state, action) => {
-        state.fetchState = FetchState.Idle;
-        state.error = action.error.message;
-        state.currentRequestId = null;
+        const { requestId } = action.meta;
+        if (
+          state.fetchState === FetchState.Pending &&
+          state.currentRequestId === requestId
+        ) {
+          state.fetchState = FetchState.Idle;
+          state.error = action.error.message;
+          state.currentRequestId = null;
+        }
       });
   },
 });

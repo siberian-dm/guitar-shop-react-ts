@@ -14,6 +14,9 @@ function App(): JSX.Element {
     <BrowserRouter>
       <Switch>
         <Route path={AppRoute.Root} exact>
+          <Redirect to={AppRoute.Catalog}/>
+        </Route>
+        <Route path={AppRoute.Catalog} exact>
           <Catalog />
         </Route>
         <Route path={AppRoute.ProductById} exact>
