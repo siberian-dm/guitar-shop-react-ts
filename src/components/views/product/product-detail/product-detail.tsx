@@ -1,11 +1,12 @@
 import ProductRate, { RateType } from '../../../common/product-rate/product-rate';
 import { formatPrice } from '../../../../utils/common';
+import { GuitarType } from '../../../../const';
 import { TGuitarCard } from '../../../../types/app-data';
 
 const productTypes: {[key: string]: string} = {
-  acoustic: 'Акустическая гитара',
-  electric: 'Электрогитара',
-  ukulele: 'Укулеле',
+  [GuitarType.Acoustic]: 'Акустическая гитара',
+  [GuitarType.Electric]: 'Электрогитара',
+  [GuitarType.Ukulele]: 'Укулеле',
 };
 
 type TProps = {

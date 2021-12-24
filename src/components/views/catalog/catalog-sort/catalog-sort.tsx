@@ -1,30 +1,40 @@
 import classNames from 'classnames';
 import useQuery from '../../../../hooks/use-query';
-import { AppRoute, SortOrder, SortType } from '../../../../const';
+import {
+  AppRoute,
+  QueryField,
+  SortOrder,
+  SortType
+} from '../../../../const';
 import { useHistory } from 'react-router-dom';
 
 function CatalogSort(): JSX.Element {
   const query = useQuery();
-  const activeSortType = query.get('sort');
-  const activeSortOrder = query.get('order');
+  const activeSortType = query.get(QueryField.Sort);
+  const activeSortOrder = query.get(QueryField.Order);
 
   const history = useHistory();
 
-  const applyQueryParams = (
-    sortType: string | null,
-    sortOrder: string | null,
-  ): void => {
-    history.push(
-      `${AppRoute.Catalog}?sort=${sortType ?? SortType.Price}&order=${sortOrder ?? SortOrder.Ascending}`,
-    );
+  const applyQueryParams = (): void => {
+    if (activeSortType === null) {
+      query.set(QueryField.Sort, SortType.Price);
+    }
+
+    if (activeSortOrder === null) {
+      query.set(QueryField.Order, SortOrder.Ascending);
+    }
+
+    history.push(`${AppRoute.Catalog}?${query}`);
   };
 
   const onSortButtonClick = (sortType: SortType) => (): void => {
-    applyQueryParams(sortType, activeSortOrder);
+    query.set(QueryField.Sort, sortType);
+    applyQueryParams();
   };
 
   const onOrderButtonClick = (sortOrder: SortOrder) => (): void => {
-    applyQueryParams(activeSortType, sortOrder);
+    query.set(QueryField.Order, sortOrder);
+    applyQueryParams();
   };
 
   const sortByPriceButtonClass = classNames(

@@ -1,18 +1,20 @@
+import Loader from '../../../common/loader/loader';
 import ProductCard from '../product-card/product-card';
+import useQuery from '../../../../hooks/use-query';
+import { AppRoute } from '../../../../const';
+import { fetchGuitarsCardsAction } from '../../../../store/api-action';
+import { FetchState } from '../../../../types/store';
 import { getFetchState, getGuitarsCards } from '../../../../store/reducers/app-data-reducer/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { fetchGuitarsCardsAction } from '../../../../store/api-action';
-import useQuery from '../../../../hooks/use-query';
-import { FetchState } from '../../../../types/store';
-import Loader from '../../../common/loader/loader';
+import { useHistory } from 'react-router-dom';
+import { validateQueryParams } from '../../../../utils/validate-query-params';
 
 const PAGE_SIZE = 9;
 
 function ProductList(): JSX.Element {
   const query = useQuery();
-  const sortType = query.get('sort');
-  const sortOrder = query.get('order');
+  const history = useHistory();
 
   const fetchState = useSelector(getFetchState);
   const guitarCards = useSelector(getGuitarsCards).slice(0, PAGE_SIZE);
@@ -20,13 +22,15 @@ function ProductList(): JSX.Element {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (sortType && sortOrder) {
-      dispatch(fetchGuitarsCardsAction({sortType, sortOrder}));
+    const {queryString, isStringify} = validateQueryParams(query);
+
+    if (isStringify) {
+      history.push(`${AppRoute.Catalog}?${queryString}`);
     }
-    if (sortType === null && sortOrder === null) {
-      dispatch(fetchGuitarsCardsAction({}));
-    }
-  }, [sortType, sortOrder, dispatch]);
+
+    dispatch(fetchGuitarsCardsAction(queryString));
+
+  }, [dispatch, history, query]);
 
   if (fetchState === FetchState.Pending) {
     return <Loader />;

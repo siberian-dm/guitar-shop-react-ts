@@ -1,4 +1,4 @@
-import { ActionType, TQueryParams } from '../types/action';
+import { ActionType } from '../types/action';
 import { APIRoute, createAPI } from '../services/api';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { FetchState, ReducerName, TRootState } from '../types/store';
@@ -9,17 +9,11 @@ const api = createAPI();
 
 export const fetchGuitarsCardsAction = createAsyncThunk<
   TGuitarCards,
-  TQueryParams,
+  string,
   {state: TRootState}
 >(
   ActionType.FetchGuitarsCards,
-  async ({ sortType, sortOrder }, { getState, requestId }) => {
-    let url: string = APIRoute.Guitars;
-
-    if (sortType && sortOrder) {
-      url = `${APIRoute.Guitars}?_sort=${sortType}&_order=${sortOrder}`;
-    }
-
+  async (queryParams, { getState, requestId }) => {
     const { currentRequestId, fetchState } = getState()[ReducerName.App];
 
     if (fetchState !== FetchState.Pending || requestId !== currentRequestId) {
@@ -27,7 +21,7 @@ export const fetchGuitarsCardsAction = createAsyncThunk<
     }
 
     try {
-      const { data } = await api.get(url);
+      const { data } = await api.get(`${APIRoute.Guitars}?${queryParams}`);
 
       return data;
     }
