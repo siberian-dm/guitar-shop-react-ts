@@ -12,6 +12,7 @@ function ProductCard({ card }: TProps): JSX.Element {
     previewImg,
     price,
     rating,
+    comments,
   } = card;
 
   return (
@@ -21,6 +22,7 @@ function ProductCard({ card }: TProps): JSX.Element {
         <ProductRate
           rating={rating}
           rateType={RateType.ProductCard}
+          rateCount={comments.length}
         />
         <p className="product-card__title">
           {name}
