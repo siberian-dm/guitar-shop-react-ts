@@ -8,7 +8,7 @@ import {
 } from '../../../../const';
 import { useHistory } from 'react-router-dom';
 
-function CatalogSort(): JSX.Element {
+function Sort(): JSX.Element {
   const query = useQuery();
   const activeSortType = query.get(QueryField.Sort);
   const activeSortOrder = query.get(QueryField.Order);
@@ -98,4 +98,4 @@ function CatalogSort(): JSX.Element {
   );
 }
 
-export default CatalogSort;
+export default Sort;
