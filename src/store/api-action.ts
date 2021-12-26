@@ -9,11 +9,11 @@ const api = createAPI();
 
 export const fetchGuitarsCardsAction = createAsyncThunk<
   TGuitarCards,
-  string,
+  void,
   {state: TRootState}
 >(
   ActionType.FetchGuitarsCards,
-  async (queryString, { getState, requestId }) => {
+  async (_arg, { getState, requestId }) => {
     const { currentRequestId, fetchState } = getState()[ReducerName.App];
 
     if (fetchState !== FetchState.Pending || requestId !== currentRequestId) {
@@ -21,9 +21,7 @@ export const fetchGuitarsCardsAction = createAsyncThunk<
     }
 
     try {
-      const { data } = await api.get(
-        `${APIRoute.GuitarsWithComments}${queryString && `&${queryString}`}`,
-      );
+      const { data } = await api.get(APIRoute.Guitars);
 
       return data;
     }

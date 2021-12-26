@@ -1,6 +1,7 @@
 import { parse, ParsedQuery, stringify } from 'query-string';
 import { QueryField, SortOrder, SortType } from '../const';
-/* eslint-disable no-console */
+
+const BASE = 10;
 
 const validConstParams = {
   [QueryField.Sort]: [SortType.Price as string, SortType.Rating as string],
@@ -48,6 +49,27 @@ const validateSortParams = (parsed: ParsedQuery) => {
   return parsed;
 };
 
+const validatePriceParams = (parsed: ParsedQuery) => {
+  const priceMin = parsed[QueryField.PriceMin];
+  const priceMax = parsed[QueryField.PriceMax];
+
+  if (typeof priceMin !== 'string') {
+    delete parsed[QueryField.PriceMin];
+  }
+  else if (isNaN(parseInt(priceMin, BASE))) {
+    delete parsed[QueryField.PriceMin];
+  }
+
+  if (typeof priceMax !== 'string') {
+    delete parsed[QueryField.PriceMax];
+  }
+  else if (isNaN(parseInt(priceMax, BASE))) {
+    delete parsed[QueryField.PriceMax];
+  }
+
+  return parsed;
+};
+
 export const validateQueryParams = (query: URLSearchParams) => {
   const prevQueryString = query.toString();
   let validatedQueryString = prevQueryString;
@@ -55,14 +77,15 @@ export const validateQueryParams = (query: URLSearchParams) => {
   if (prevQueryString) {
     const parsed = parse(prevQueryString);
 
-    const validatedParamKeys = validateParamKeys(parsed);
-    const validatedSortParams = validateSortParams(validatedParamKeys);
+    const validatedStep1 = validateParamKeys(parsed);
+    const validatedStep2 = validateSortParams(validatedStep1);
+    const validatedStep3 = validatePriceParams(validatedStep2);
 
-    validatedQueryString = stringify(validatedSortParams, {skipNull: true});
+    validatedQueryString = stringify(validatedStep3, {
+      skipNull: true,
+      skipEmptyString: true,
+    });
   }
-
-  console.log('old', prevQueryString);
-  console.log('new', validatedQueryString);
 
   const isStringify = prevQueryString !== validatedQueryString;
 

@@ -1,4 +1,3 @@
-import { adaptDataToClient } from './adapter';
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchGuitarsCardsAction } from '../../api-action';
 import { FetchState, ReducerName, TAppDataState } from '../../../types/store';
@@ -28,7 +27,7 @@ const appDataSlice = createSlice({
           state.fetchState === FetchState.Pending &&
           state.currentRequestId === requestId
         ) {
-          state.guitarsCards = adaptDataToClient(action.payload);
+          state.guitarsCards = action.payload;
           state.fetchState = FetchState.Idle;
           state.currentRequestId = null;
           state.error = undefined;

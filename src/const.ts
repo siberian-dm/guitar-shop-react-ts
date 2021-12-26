@@ -22,7 +22,9 @@ export enum QueryField {
   Sort = '_sort',
   Order = '_order',
   Start = '_start',
-  End = '_end'
+  End = '_end',
+  PriceMin = 'price_gte',
+  PriceMax = 'price_lte',
 }
 
 export enum GuitarType {

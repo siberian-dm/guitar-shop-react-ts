@@ -1,44 +1,47 @@
+import Empty from '../empty/empty';
 import Loader from '../../../common/loader/loader';
 import ProductCard from '../product-card/product-card';
+import useFetch from '../../../../hooks/use-fetch';
 import useQuery from '../../../../hooks/use-query';
+import { APIRoute } from '../../../../services/api';
 import { AppRoute } from '../../../../const';
 import { fetchGuitarsCardsAction } from '../../../../store/api-action';
-import { FetchState } from '../../../../types/store';
-import { getFetchState, getGuitarsCards } from '../../../../store/reducers/app-data-reducer/selectors';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { TGuitarCards } from '../../../../types/app-data';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { validateQueryParams } from '../../../../utils/validate-query-params';
-
-const PAGE_SIZE = 9;
 
 function ProductList(): JSX.Element {
   const query = useQuery();
   const history = useHistory();
-
-  const fetchState = useSelector(getFetchState);
-  const guitarCards = useSelector(getGuitarsCards).slice(0, PAGE_SIZE);
-
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const {queryString, isStringify} = validateQueryParams(query);
+  const { queryString, isStringify } = validateQueryParams(query);
 
-    if (isStringify) {
-      history.push(`${AppRoute.Catalog}?${queryString}`);
-    }
+  if (isStringify) {
+    history.push(`${AppRoute.Catalog}?${queryString}`);
+  }
 
-    dispatch(fetchGuitarsCardsAction(queryString));
+  const { data: guitarCards, isLoading } = useFetch<TGuitarCards>(
+    `${APIRoute.GuitarsWithComments}${queryString && `&${queryString}`}`,
+  );
 
-  }, [dispatch, history, query]);
+  const isDataLoaded = guitarCards !== null && guitarCards.length !==0;
 
-  if (fetchState === FetchState.Pending) {
+  if (isLoading) {
     return <Loader />;
+  }
+
+  if (isDataLoaded) {
+    dispatch(fetchGuitarsCardsAction());
+  }
+  else {
+    return <Empty />;
   }
 
   return (
     <div className="cards catalog__cards">
-      {guitarCards.length !==0 && (
+      {isDataLoaded && (
         guitarCards.map((card) => <ProductCard key={card.id} card={card}/>)
       )}
     </div>
