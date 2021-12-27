@@ -6,7 +6,6 @@ const BASE = 10;
 const validConstParams = {
   [QueryField.Sort]: [SortType.Price as string, SortType.Rating as string],
   [QueryField.Order]: [SortOrder.Ascending as string, SortOrder.Descending as string],
-  // [QueryField.Type]: [GuitarType.Acoustic as string, GuitarType.Electric as string, GuitarType.Ukulele as string],
 };
 
 const validateParamKeys = (parsed: ParsedQuery) => {

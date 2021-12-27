@@ -2,7 +2,8 @@ import { rootReducer } from '../store/reducers/root-reducer';
 import { TGuitarCards } from './app-data';
 
 export enum ReducerName {
-  App = 'APP',
+  App = 'app',
+  FilterType = 'filterType',
 }
 
 export enum FetchState {
@@ -16,5 +17,11 @@ export type TAppDataState = {
   currentRequestId: null | string,
   error: undefined | string,
 }
+
+export type TFilterTypeDataState = {
+  isAcousticCheck: boolean;
+  isElectricCheck: boolean;
+  isUkuleleCheck: boolean;
+};
 
 export type TRootState = ReturnType<typeof rootReducer>;
