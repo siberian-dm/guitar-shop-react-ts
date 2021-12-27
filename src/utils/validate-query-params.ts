@@ -87,7 +87,7 @@ export const validateQueryParams = (query: URLSearchParams) => {
     });
   }
 
-  const isStringify = prevQueryString !== validatedQueryString;
+  const isChanged = prevQueryString !== validatedQueryString;
 
-  return {queryString: validatedQueryString, isStringify};
+  return {queryString: validatedQueryString, isChanged};
 };

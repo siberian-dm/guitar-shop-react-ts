@@ -3,11 +3,11 @@ function Strings(): JSX.Element {
     <fieldset className="catalog-filter__block">
       <legend className="catalog-filter__block-title">Количество струн</legend>
       <div className="form-checkbox catalog-filter__block-item">
-        <input className="visually-hidden" type="checkbox" id="4-strings" name="4-strings" checked/>
+        <input className="visually-hidden" type="checkbox" id="4-strings" name="4-strings"/>
         <label htmlFor="4-strings">4</label>
       </div>
       <div className="form-checkbox catalog-filter__block-item">
-        <input className="visually-hidden" type="checkbox" id="6-strings" name="6-strings" checked/>
+        <input className="visually-hidden" type="checkbox" id="6-strings" name="6-strings"/>
         <label htmlFor="6-strings">6</label>
       </div>
       <div className="form-checkbox catalog-filter__block-item">
@@ -15,7 +15,7 @@ function Strings(): JSX.Element {
         <label htmlFor="7-strings">7</label>
       </div>
       <div className="form-checkbox catalog-filter__block-item">
-        <input className="visually-hidden" type="checkbox" id="12-strings" name="12-strings" disabled/>
+        <input className="visually-hidden" type="checkbox" id="12-strings" name="12-strings"/>
         <label htmlFor="12-strings">12</label>
       </div>
     </fieldset>

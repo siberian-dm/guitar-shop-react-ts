@@ -16,9 +16,9 @@ function ProductList(): JSX.Element {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { queryString, isStringify } = validateQueryParams(query);
+  const { queryString, isChanged } = validateQueryParams(query);
 
-  if (isStringify) {
+  if (isChanged) {
     history.push(`${AppRoute.Catalog}?${queryString}`);
   }
 

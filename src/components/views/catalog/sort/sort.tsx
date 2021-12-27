@@ -16,11 +16,11 @@ function Sort(): JSX.Element {
   const history = useHistory();
 
   const applyQueryParams = (): void => {
-    if (activeSortType === null) {
+    if (query.get(QueryField.Sort) === null) {
       query.set(QueryField.Sort, SortType.Price);
     }
 
-    if (activeSortOrder === null) {
+    if (query.get(QueryField.Order) === null) {
       query.set(QueryField.Order, SortOrder.Ascending);
     }
 

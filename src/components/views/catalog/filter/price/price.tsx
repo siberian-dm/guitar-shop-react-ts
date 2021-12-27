@@ -34,6 +34,7 @@ function Price(): JSX.Element {
   const onPriceMinInputBlur = () => {
     const validPriceMin = validatePriceMin(priceRange.min, priceRange.max, validPriceRange);
     setPriceRange((prev) => ({...prev, min: validPriceMin}));
+
     if (validPriceMin !== queryPriceMin) {
       query.set(QueryField.PriceMin, validPriceMin);
       applyQueryParams();
