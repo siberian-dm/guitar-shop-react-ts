@@ -1,7 +1,7 @@
 import useQuery from '../../../../../hooks/use-query';
 import { AppRoute, QueryField } from '../../../../../const';
 import { ChangeEvent, useState } from 'react';
-import { getPriceRange } from '../../../../../store/reducers/app-data-reducer/selectors';
+import { getPriceMaxLimit, getPriceMinLimit } from '../../../../../store/reducers/catalog-slice/selectors';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { validatePriceMax, validatePriceMin } from '../../../../../utils/validate-price';
@@ -12,41 +12,52 @@ function Price(): JSX.Element {
   const queryPriceMin = query.get(QueryField.PriceMin) ?? '';
   const queryPriceMax = query.get(QueryField.PriceMax) ?? '';
 
-  const validPriceRange = useSelector(getPriceRange);
+  const priceMinLimit = useSelector(getPriceMinLimit);
+  const priceMaxLimit = useSelector(getPriceMaxLimit);
 
-  const [priceRange, setPriceRange] = useState({
-    min: queryPriceMin,
-    max: queryPriceMax,
-  });
+  const [priceMin, setPriceMin] = useState(queryPriceMin);
+  const [priceMax, setPriceMax] = useState(queryPriceMax);
 
   const applyQueryParams = () => {
     history.push(`${AppRoute.Catalog}?${query}`);
   };
 
   const onPriceMinInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    setPriceRange((prev) => ({...prev, min: evt.target.value}));
+    setPriceMin(evt.target.value);
   };
 
   const onPriceMaxInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    setPriceRange((prev) => ({...prev, max: evt.target.value}));
+    setPriceMax(evt.target.value);
   };
 
   const onPriceMinInputBlur = () => {
-    const validPriceMin = validatePriceMin(priceRange.min, priceRange.max, validPriceRange);
-    setPriceRange((prev) => ({...prev, min: validPriceMin}));
+    const validatedPriceMin = validatePriceMin({
+      currentMin: priceMin,
+      currentMax: priceMax,
+      limitMin: priceMinLimit,
+      limitMax: priceMaxLimit,
+    });
 
-    if (validPriceMin !== queryPriceMin) {
-      query.set(QueryField.PriceMin, validPriceMin);
+    setPriceMin(validatedPriceMin);
+
+    if (validatedPriceMin !== queryPriceMin) {
+      query.set(QueryField.PriceMin, validatedPriceMin);
       applyQueryParams();
     }
   };
 
   const onPriceMaxInputBlur = () => {
-    const validPriceMax = validatePriceMax(priceRange.min, priceRange.max, validPriceRange);
-    setPriceRange((prev) => ({...prev, max: validPriceMax}));
+    const validatedPriceMax = validatePriceMax({
+      currentMin: priceMin,
+      currentMax: priceMax,
+      limitMin: priceMinLimit,
+      limitMax: priceMaxLimit,
+    });
 
-    if (validPriceMax !== queryPriceMax) {
-      query.set(QueryField.PriceMax, validPriceMax);
+    setPriceMax(validatedPriceMax);
+
+    if (validatedPriceMax !== queryPriceMax) {
+      query.set(QueryField.PriceMax, validatedPriceMax);
       applyQueryParams();
     }
   };
@@ -59,24 +70,24 @@ function Price(): JSX.Element {
           <label className="visually-hidden">Минимальная цена</label>
           <input
             type="number"
-            placeholder={String(validPriceRange.min)}
+            placeholder={String(priceMinLimit)}
             id="priceMin"
             name="от"
             onChange={onPriceMinInputChange}
             onBlur={onPriceMinInputBlur}
-            value={priceRange.min}
+            value={priceMin}
           />
         </div>
         <div className="form-input">
           <label className="visually-hidden">Максимальная цена</label>
           <input
             type="number"
-            placeholder={String(validPriceRange.max)}
+            placeholder={String(priceMaxLimit)}
             id="priceMax"
             name="до"
             onChange={onPriceMaxInputChange}
             onBlur={onPriceMaxInputBlur}
-            value={priceRange.max}
+            value={priceMax}
           />
         </div>
       </div>

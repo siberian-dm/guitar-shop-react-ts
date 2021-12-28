@@ -1,11 +1,13 @@
 const BASE = 10;
 
-type TPriceRange = {
-  min: number;
-  max: number;
+type TPriceRanges = {
+  currentMin: string;
+  currentMax: string;
+  limitMin: number;
+  limitMax: number;
 }
 
-export const validatePriceMin = (currentMin: string, currentMax: string, validPriceRange: TPriceRange) => {
+export const validatePriceMin = ({ currentMin, currentMax, limitMin, limitMax }: TPriceRanges) => {
   let min = parseInt(currentMin, BASE);
   const max = parseInt(currentMax, BASE);
 
@@ -13,22 +15,22 @@ export const validatePriceMin = (currentMin: string, currentMax: string, validPr
     return '';
   }
 
-  if (min < validPriceRange.min) {
-    min = validPriceRange.min;
+  if (min < limitMin) {
+    min = limitMin;
   }
 
   if (!isNaN(max) && min > max) {
     min = max;
   }
 
-  if (isNaN(max) && min > validPriceRange.max) {
-    min = validPriceRange.max;
+  if (isNaN(max) && min > limitMax) {
+    min = limitMax;
   }
 
   return String(min);
 };
 
-export const validatePriceMax = (currentMin: string, currentMax: string, validPriceRange: TPriceRange) => {
+export const validatePriceMax = ({ currentMin, currentMax, limitMin, limitMax }: TPriceRanges) => {
   let max = parseInt(currentMax, BASE);
   const min = parseInt(currentMin, BASE);
 
@@ -36,16 +38,16 @@ export const validatePriceMax = (currentMin: string, currentMax: string, validPr
     return '';
   }
 
-  if (max > validPriceRange.max) {
-    max = validPriceRange.max;
+  if (max > limitMax) {
+    max = limitMax;
   }
 
   if (!isNaN(min) && min > max) {
     max = min;
   }
 
-  if (isNaN(min) && max < validPriceRange.min) {
-    max = validPriceRange.min;
+  if (isNaN(min) && max < limitMin) {
+    max = limitMin;
   }
 
   return String(max);
