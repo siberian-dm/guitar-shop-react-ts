@@ -5,6 +5,9 @@ const REQUEST_TIMEOUT = 5000;
 
 export enum APIRoute {
   Guitars = '/guitars',
+  GuitarsWithComments = '/guitars?_embed=comments',
+  GuitarWithMinPrice = '/guitars?_order=asc&_sort=price&_start=0&_limit=1',
+  GuitarWithMaxPrice = '/guitars?_order=desc&_sort=price&_start=0&_limit=1',
   Comments = '/comments',
   Coupons = '/coupons',
   Orders = '/orders',

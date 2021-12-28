@@ -1,7 +1,6 @@
-import appDataReducer from './app-data-reducer/reducer';
+import catalogSlice from './catalog-slice/catalog-slice';
 import { combineReducers } from '@reduxjs/toolkit';
-import { ReducerName } from '../../types/store';
 
 export const rootReducer = combineReducers({
-  [ReducerName.App]: appDataReducer,
+  [catalogSlice.name]: catalogSlice.reducer,
 });

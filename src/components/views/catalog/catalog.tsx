@@ -1,6 +1,6 @@
 import Breadcrumbs from '../../common/breadcrumbs/breadcrumbs';
-import CatalogSort from './catalog-sort/catalog-sort';
-import FilterForm from './filter-form/filter-form';
+import Sort from './sort/sort';
+import Filter from './filter/filter';
 import MainLayout from '../../common/main-layout/main-layout';
 import Pagination from './pagination/pagination';
 import ProductList from './propuct-list/product-list';
@@ -13,8 +13,8 @@ function Catalog(): JSX.Element {
           <h1 className="page-content__title title title--bigger">Каталог гитар</h1>
           <Breadcrumbs />
           <div className="catalog">
-            <FilterForm />
-            <CatalogSort />
+            <Filter />
+            <Sort />
             <ProductList />
             <Pagination />
           </div>

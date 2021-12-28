@@ -1,35 +1,44 @@
-import { ActionType, TQueryParams } from '../types/action';
-import { APIRoute, createAPI } from '../services/api';
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { FetchState, ReducerName, TRootState } from '../types/store';
-import { TGuitarCards } from '../types/app-data';
+import { APIRoute } from '../services/api';
+import { FetchState } from '../types/store';
+import {
+  loadGuitarsCards,
+  loadPriceMaxLimit,
+  loadPriceMinLimit,
+  setFetchState
+} from './reducers/catalog-slice/catalog-slice';
+import { ThunkActionResult } from '../types/action';
 import { toast } from 'react-toastify';
+import { parse, stringify } from 'query-string';
+import { QueryField } from '../const';
 
-const api = createAPI();
-
-export const fetchGuitarsCardsAction = createAsyncThunk<
-  TGuitarCards,
-  TQueryParams,
-  {state: TRootState}
->(
-  ActionType.FetchGuitarsCards,
-  async ({ sortType, sortOrder }, { getState, requestId }) => {
-    let url: string = APIRoute.Guitars;
-
-    if (sortType && sortOrder) {
-      url = `${APIRoute.Guitars}?_sort=${sortType}&_order=${sortOrder}`;
-    }
-
-    const { currentRequestId, fetchState } = getState()[ReducerName.App];
-
-    if (fetchState !== FetchState.Pending || requestId !== currentRequestId) {
-      return;
-    }
-
+export const fetchGuitarsByQuery = (queryString: string): ThunkActionResult =>
+  async (dispatch, _getState, api): Promise<void> => {
     try {
-      const { data } = await api.get(url);
+      dispatch(setFetchState(FetchState.Pending));
 
-      return data;
+      const parsed = parse(queryString);
+      const priceRangeQuery = stringify({
+        ...parsed,
+        [QueryField.Sort]: '',
+        [QueryField.Order]: '',
+        [QueryField.PriceMin]: '',
+        [QueryField.PriceMax]: '',
+      }, {skipEmptyString: true});
+
+      const [
+        { data: guitarWithMinPrice },
+        { data: guitarWithMaxPrice },
+        { data: guitarsByQuery },
+      ] =
+      await Promise.all([
+        api.get(`${APIRoute.GuitarWithMinPrice}${priceRangeQuery && `&${priceRangeQuery}`}`),
+        api.get(`${APIRoute.GuitarWithMaxPrice}${priceRangeQuery && `&${priceRangeQuery}`}`),
+        api.get(`${APIRoute.GuitarsWithComments}${queryString && `&${queryString}`}`),
+      ]);
+
+      dispatch(loadPriceMinLimit(guitarWithMinPrice[0].price));
+      dispatch(loadPriceMaxLimit(guitarWithMaxPrice[0].price));
+      dispatch(loadGuitarsCards(guitarsByQuery));
     }
     catch (error) {
       const errorMessage = (error as {message: string}).message;
@@ -38,5 +47,7 @@ export const fetchGuitarsCardsAction = createAsyncThunk<
         toast.error(errorMessage);
       }
     }
-  },
-);
+    finally {
+      dispatch(setFetchState(FetchState.Idle));
+    }
+  };

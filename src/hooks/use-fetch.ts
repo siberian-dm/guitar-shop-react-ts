@@ -30,7 +30,9 @@ const useFetch = <T>(url: string) => {
     fetchData();
 
     return () => {
+      setData(null);
       setError(null);
+      setIsLoading(false);
     };
   }, [url]);
 

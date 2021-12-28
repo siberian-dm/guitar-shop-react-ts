@@ -1,42 +1,45 @@
+import Empty from '../empty/empty';
+import Loader from '../../../common/loader/loader';
 import ProductCard from '../product-card/product-card';
-import { getFetchState, getGuitarsCards } from '../../../../store/reducers/app-data-reducer/selectors';
+import useQuery from '../../../../hooks/use-query';
+import { AppRoute } from '../../../../const';
+import { fetchGuitarsByQuery } from '../../../../store/api-action';
+import { FetchState } from '../../../../types/store';
+import { getFetchState, getGuitarsCards } from '../../../../store/reducers/catalog-slice/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { fetchGuitarsCardsAction } from '../../../../store/api-action';
-import useQuery from '../../../../hooks/use-query';
-import { FetchState } from '../../../../types/store';
-import Loader from '../../../common/loader/loader';
-
-const PAGE_SIZE = 9;
+import { useHistory } from 'react-router-dom';
+import { validateQueryParams } from '../../../../utils/validate-query-params';
 
 function ProductList(): JSX.Element {
   const query = useQuery();
-  const sortType = query.get('sort');
-  const sortOrder = query.get('order');
-
-  const fetchState = useSelector(getFetchState);
-  const guitarCards = useSelector(getGuitarsCards).slice(0, PAGE_SIZE);
-
+  const history = useHistory();
   const dispatch = useDispatch();
+  const fetchState = useSelector(getFetchState);
+  const guitarCards = useSelector(getGuitarsCards);
 
   useEffect(() => {
-    if (sortType && sortOrder) {
-      dispatch(fetchGuitarsCardsAction({sortType, sortOrder}));
+    const { queryString, isChanged } = validateQueryParams(query);
+
+    if (isChanged) {
+      history.push(`${AppRoute.Catalog}?${queryString}`);
     }
-    if (sortType === null && sortOrder === null) {
-      dispatch(fetchGuitarsCardsAction({}));
-    }
-  }, [sortType, sortOrder, dispatch]);
+
+    dispatch(fetchGuitarsByQuery(queryString));
+  }, [dispatch, history, query]);
 
   if (fetchState === FetchState.Pending) {
     return <Loader />;
   }
 
+  if (guitarCards.length === 0) {
+    return <Empty />;
+  }
+
+
   return (
     <div className="cards catalog__cards">
-      {guitarCards.length !==0 && (
-        guitarCards.map((card) => <ProductCard key={card.id} card={card}/>)
-      )}
+      {guitarCards.map((card) => <ProductCard key={card.id} card={card}/>)}
     </div>
   );
 }

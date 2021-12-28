@@ -1,3 +1,14 @@
+export type TComment = {
+  id: string;
+  userName: string;
+  advantages: string;
+  disadvantages: string;
+  comment: string;
+  rating: number;
+  createAt: string;
+  guitarId: number;
+}
+
 export type TGuitarCard = {
   id: number;
   name: string;
@@ -8,6 +19,7 @@ export type TGuitarCard = {
   stringCount: number;
   rating: number;
   price: number;
+  comments: TComment[];
 }
 
 export type TGuitarCards = TGuitarCard[];

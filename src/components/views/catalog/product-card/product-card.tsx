@@ -12,15 +12,19 @@ function ProductCard({ card }: TProps): JSX.Element {
     previewImg,
     price,
     rating,
+    comments,
   } = card;
+
+  const adaptedPreviewImg = previewImg.replace('img/', '/img/content/');
 
   return (
     <div className="product-card">
-      <img src={previewImg} width="75" height="190" alt={name}/>
+      <img src={adaptedPreviewImg} width="75" height="190" alt={name}/>
       <div className="product-card__info">
         <ProductRate
           rating={rating}
           rateType={RateType.ProductCard}
+          rateCount={comments.length}
         />
         <p className="product-card__title">
           {name}
