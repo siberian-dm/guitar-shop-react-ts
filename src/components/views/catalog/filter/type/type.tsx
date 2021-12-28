@@ -1,8 +1,14 @@
 import useQuery from '../../../../../hooks/use-query';
 import { AppRoute, GuitarType, QueryField } from '../../../../../const';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { parse, stringify } from 'query-string';
-import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+
+const enum CheckBoxName {
+  Acoustic = 'acoustic',
+  Electric = 'electric',
+  Ukulele = 'ukulele',
+}
 
 function Type(): JSX.Element {
   const query = useQuery();
@@ -19,23 +25,11 @@ function Type(): JSX.Element {
   const [isElectricCheck, setIsElectricCheck] = useState(queryTypes.includes(GuitarType.Electric));
   const [isUkuleleCheck, setIsUkuleleCheck] = useState(queryTypes.includes(GuitarType.Ukulele));
 
-  const onAcousticCheckboxChange = () => {
-    setIsAcousticCheck((prev) => !prev);
-  };
-
-  const onElectricCheckboxChange = () => {
-    setIsElectricCheck((prev) => !prev);
-  };
-
-  const onUkuleleCheckboxChange = () => {
-    setIsUkuleleCheck((prev) => !prev);
-  };
-
   useEffect(() => {
     const newQueryString = stringify(
       {
         ...parse(queryString),
-        type: [
+        [QueryField.Type]: [
           `${isAcousticCheck ? GuitarType.Acoustic : ''}`,
           `${isElectricCheck ? GuitarType.Electric : ''}`,
           `${isUkuleleCheck ? GuitarType.Ukulele : ''}`,
@@ -49,6 +43,19 @@ function Type(): JSX.Element {
     }
   }, [history, isAcousticCheck, isElectricCheck, isUkuleleCheck, queryString]);
 
+  const onCheckboxChange = (evt: ChangeEvent) => {
+    switch (evt.target.id) {
+      case CheckBoxName.Acoustic:
+        setIsAcousticCheck((prev) => !prev);
+        break;
+      case CheckBoxName.Electric:
+        setIsElectricCheck((prev) => !prev);
+        break;
+      case CheckBoxName.Ukulele:
+        setIsUkuleleCheck((prev) => !prev);
+    }
+  };
+
   return (
     <fieldset className="catalog-filter__block">
       <legend className="catalog-filter__block-title">Тип гитар</legend>
@@ -56,34 +63,34 @@ function Type(): JSX.Element {
         <input
           className="visually-hidden"
           type="checkbox"
-          id="acoustic"
-          name="acoustic"
+          id={CheckBoxName.Acoustic}
+          name={CheckBoxName.Acoustic}
           checked={isAcousticCheck}
-          onChange={onAcousticCheckboxChange}
+          onChange={onCheckboxChange}
         />
-        <label htmlFor="acoustic">Акустические гитары</label>
+        <label htmlFor={CheckBoxName.Acoustic}>Акустические гитары</label>
       </div>
       <div className="form-checkbox catalog-filter__block-item">
         <input
           className="visually-hidden"
           type="checkbox"
-          id="electric"
-          name="electric"
+          id={CheckBoxName.Electric}
+          name={CheckBoxName.Electric}
           checked={isElectricCheck}
-          onChange={onElectricCheckboxChange}
+          onChange={onCheckboxChange}
         />
-        <label htmlFor="electric">Электрогитары</label>
+        <label htmlFor={CheckBoxName.Electric}>Электрогитары</label>
       </div>
       <div className="form-checkbox catalog-filter__block-item">
         <input
           className="visually-hidden"
           type="checkbox"
-          id="ukulele"
-          name="ukulele"
+          id={CheckBoxName.Ukulele}
+          name={CheckBoxName.Ukulele}
           checked={isUkuleleCheck}
-          onChange={onUkuleleCheckboxChange}
+          onChange={onCheckboxChange}
         />
-        <label htmlFor="ukulele">Укулеле</label>
+        <label htmlFor={CheckBoxName.Ukulele}>Укулеле</label>
       </div>
     </fieldset>
   );
