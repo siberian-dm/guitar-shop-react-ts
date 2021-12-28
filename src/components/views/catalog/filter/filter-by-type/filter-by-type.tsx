@@ -10,7 +10,7 @@ const enum CheckBoxName {
   Ukulele = 'ukulele',
 }
 
-function Type(): JSX.Element {
+function FilterByType(): JSX.Element {
   const query = useQuery();
   const history = useHistory();
 
@@ -96,4 +96,4 @@ function Type(): JSX.Element {
   );
 }
 
-export default Type;
+export default FilterByType;

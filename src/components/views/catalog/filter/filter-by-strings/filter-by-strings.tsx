@@ -16,7 +16,7 @@ const enum CheckBoxName {
   TwelveStrings = '12-strings',
 }
 
-function Strings(): JSX.Element {
+function FilterByStrings(): JSX.Element {
   const query = useQuery();
   const history = useHistory();
 
@@ -156,4 +156,4 @@ function Strings(): JSX.Element {
   );
 }
 
-export default Strings;
+export default FilterByStrings;

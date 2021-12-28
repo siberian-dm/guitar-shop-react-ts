@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { validatePriceMax, validatePriceMin } from '../../../../../utils/validate-price';
 
-function Price(): JSX.Element {
+function FilterByPrice(): JSX.Element {
   const query = useQuery();
   const history = useHistory();
   const queryPriceMin = query.get(QueryField.PriceMin) ?? '';
@@ -95,4 +95,4 @@ function Price(): JSX.Element {
   );
 }
 
-export default Price;
+export default FilterByPrice;
