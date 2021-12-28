@@ -53,17 +53,19 @@ const validatePriceParams = (parsed: ParsedQuery) => {
   const priceMax = parsed[QueryField.PriceMax];
 
   if (typeof priceMin !== 'string') {
-    delete parsed[QueryField.PriceMin];
+    parsed[QueryField.PriceMin] = null;
   }
-  else if (isNaN(parseInt(priceMin, BASE))) {
-    delete parsed[QueryField.PriceMin];
+  else {
+    const priceMinToNumber = parseInt(priceMin, BASE);
+    parsed[QueryField.PriceMin] = isNaN(priceMinToNumber) ? null : String(priceMinToNumber);
   }
 
   if (typeof priceMax !== 'string') {
-    delete parsed[QueryField.PriceMax];
+    parsed[QueryField.PriceMax] = null;
   }
-  else if (isNaN(parseInt(priceMax, BASE))) {
-    delete parsed[QueryField.PriceMax];
+  else {
+    const priceMaxToNumber = parseInt(priceMax, BASE);
+    parsed[QueryField.PriceMax] = isNaN(priceMaxToNumber) ? null : String(priceMaxToNumber);
   }
 
   return parsed;
