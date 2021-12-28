@@ -1,8 +1,5 @@
-export enum ActionType {
-  FetchGuitarsCards = 'guitars/fetchGuitarsCards',
-}
+import { Action, ThunkAction } from '@reduxjs/toolkit';
+import { AxiosInstance } from 'axios';
+import { TRootState } from './store';
 
-export type TQueryParams = {
-  sortType?: string;
-  sortOrder?: string;
-}
+export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, TRootState, AxiosInstance, Action>;

@@ -2,9 +2,9 @@ import classNames from 'classnames';
 import styles from './search-form.module.css';
 import { AppRoute } from '../../../../const';
 import { ChangeEvent, useState } from 'react';
-import { getGuitarsCards } from '../../../../store/reducers/app-data-reducer/selectors';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { getGuitarsCards } from '../../../../store/reducers/catalog-slice/selectors';
 
 function SearchForm(): JSX.Element {
   const history = useHistory();

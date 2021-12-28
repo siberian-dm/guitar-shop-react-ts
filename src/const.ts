@@ -17,7 +17,6 @@ export enum SortOrder {
 }
 
 export enum QueryField {
-  Name = 'name',
   Type = 'type',
   Sort = '_sort',
   Order = '_order',
@@ -25,10 +24,18 @@ export enum QueryField {
   End = '_end',
   PriceMin = 'price_gte',
   PriceMax = 'price_lte',
+  StringCount = 'stringCount',
 }
 
 export enum GuitarType {
   Acoustic = 'acoustic',
   Electric = 'electric',
   Ukulele = 'ukulele',
+}
+
+export enum StringCount {
+  Four = '4',
+  Six = '6',
+  Seven = '7',
+  Twelve = '12',
 }

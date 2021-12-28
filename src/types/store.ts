@@ -4,6 +4,7 @@ import { TGuitarCards } from './app-data';
 export enum ReducerName {
   App = 'app',
   FilterType = 'filterType',
+  Catalog = 'catalog',
 }
 
 export enum FetchState {
@@ -18,10 +19,11 @@ export type TAppDataState = {
   error: undefined | string,
 }
 
-export type TFilterTypeDataState = {
-  isAcousticCheck: boolean;
-  isElectricCheck: boolean;
-  isUkuleleCheck: boolean;
-};
+export type TCatalogDataState = {
+  guitarsCards: [] | TGuitarCards;
+  fetchState: FetchState;
+  priceMinLimit: number;
+  priceMaxLimit: number;
+}
 
 export type TRootState = ReturnType<typeof rootReducer>;
