@@ -6,6 +6,8 @@ const initialState: TCatalogDataState = {
   fetchState: FetchState.Idle,
   priceMinLimit: 0,
   priceMaxLimit: 0,
+  currentPageNumber: 1,
+  cardTotalCount: 0,
 };
 
 const catalogSlice = createSlice({
@@ -21,8 +23,14 @@ const catalogSlice = createSlice({
     loadPriceMaxLimit: (state, action) => {
       state.priceMaxLimit = action.payload;
     },
+    loadCardTotalCount: (state, action) => {
+      state.cardTotalCount = action.payload;
+    },
     setFetchState: (state, action) => {
       state.fetchState = action.payload;
+    },
+    setCurrentPage: (state, action) => {
+      state.currentPageNumber = action.payload;
     },
   },
 });
@@ -34,6 +42,8 @@ export const {
   loadPriceMinLimit,
   loadPriceMaxLimit,
   setFetchState,
+  setCurrentPage,
+  loadCardTotalCount,
 } = actions;
 
 export default catalogSlice;

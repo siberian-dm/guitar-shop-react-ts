@@ -1,8 +1,10 @@
 import useQuery from '../../../../../hooks/use-query';
-import { AppRoute, GuitarType, QueryField } from '../../../../../const';
 import { ChangeEvent, useEffect, useState } from 'react';
+import { getCatalogRouteWithCurrentPage } from '../../../../../store/reducers/catalog-slice/selectors';
+import { GuitarType, QueryField } from '../../../../../const';
 import { parse, stringify } from 'query-string';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const enum CheckBoxName {
   Acoustic = 'acoustic',
@@ -13,6 +15,7 @@ const enum CheckBoxName {
 function FilterByType(): JSX.Element {
   const query = useQuery();
   const history = useHistory();
+  const catalogRouteWithCurrentPage = useSelector(getCatalogRouteWithCurrentPage);
 
   const queryString = query.toString();
   const parsedQueryTypes = parse(queryString)[QueryField.Type];
@@ -39,9 +42,17 @@ function FilterByType(): JSX.Element {
     );
 
     if (newQueryString !== queryString) {
-      history.push(`${AppRoute.Catalog}?${newQueryString}`);
+      history.push(`${catalogRouteWithCurrentPage}?${newQueryString}`);
     }
-  }, [history, isAcousticCheck, isElectricCheck, isUkuleleCheck, queryString]);
+  },
+  [
+    catalogRouteWithCurrentPage,
+    history,
+    isAcousticCheck,
+    isElectricCheck,
+    isUkuleleCheck,
+    queryString,
+  ]);
 
   const onCheckboxChange = (evt: ChangeEvent) => {
     switch (evt.target.id) {

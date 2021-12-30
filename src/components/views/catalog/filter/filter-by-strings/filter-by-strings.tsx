@@ -1,13 +1,10 @@
 import useQuery from '../../../../../hooks/use-query';
-import {
-  AppRoute,
-  GuitarType,
-  QueryField,
-  StringCount
-} from '../../../../../const';
 import { ChangeEvent, useEffect, useState } from 'react';
+import { getCatalogRouteWithCurrentPage } from '../../../../../store/reducers/catalog-slice/selectors';
+import { GuitarType, QueryField, StringCount } from '../../../../../const';
 import { parse, stringify } from 'query-string';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const enum CheckBoxName {
   FourStrings = '4-strings',
@@ -19,6 +16,7 @@ const enum CheckBoxName {
 function FilterByStrings(): JSX.Element {
   const query = useQuery();
   const history = useHistory();
+  const catalogRouteWithCurrentPage = useSelector(getCatalogRouteWithCurrentPage);
 
   const queryString = query.toString();
   const parsedQueryStringCounts = parse(queryString)[QueryField.StringCount];
@@ -69,10 +67,11 @@ function FilterByStrings(): JSX.Element {
     );
 
     if (newQueryString !== queryString) {
-      history.push(`${AppRoute.Catalog}?${newQueryString}`);
+      history.push(`${catalogRouteWithCurrentPage}?${newQueryString}`);
     }
   },
   [
+    catalogRouteWithCurrentPage,
     history,
     isFourStringsCheck,
     isFourStringsDisabled,

@@ -1,15 +1,17 @@
 import { APIRoute } from '../services/api';
 import { FetchState } from '../types/store';
 import {
+  loadCardTotalCount,
   loadGuitarsCards,
   loadPriceMaxLimit,
   loadPriceMinLimit,
   setFetchState
 } from './reducers/catalog-slice/catalog-slice';
+import { parse, stringify } from 'query-string';
+import { parseIntNumberFromString } from '../utils/common';
+import { QueryField } from '../const';
 import { ThunkActionResult } from '../types/action';
 import { toast } from 'react-toastify';
-import { parse, stringify } from 'query-string';
-import { QueryField } from '../const';
 
 export const fetchGuitarsByQuery = (queryString: string): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
@@ -23,12 +25,14 @@ export const fetchGuitarsByQuery = (queryString: string): ThunkActionResult =>
         [QueryField.Order]: '',
         [QueryField.PriceMin]: '',
         [QueryField.PriceMax]: '',
+        [QueryField.Start]: '',
+        [QueryField.End]: '',
       }, {skipEmptyString: true});
 
       const [
         { data: guitarWithMinPrice },
         { data: guitarWithMaxPrice },
-        { data: guitarsByQuery },
+        { data: guitarsByQuery, headers },
       ] =
       await Promise.all([
         api.get(`${APIRoute.GuitarWithMinPrice}${priceRangeQuery && `&${priceRangeQuery}`}`),
@@ -36,6 +40,9 @@ export const fetchGuitarsByQuery = (queryString: string): ThunkActionResult =>
         api.get(`${APIRoute.GuitarsWithComments}${queryString && `&${queryString}`}`),
       ]);
 
+      const cardTotalCount = parseIntNumberFromString(headers['x-total-count']);
+
+      dispatch(loadCardTotalCount(cardTotalCount));
       dispatch(loadPriceMinLimit(guitarWithMinPrice[0].price));
       dispatch(loadPriceMaxLimit(guitarWithMaxPrice[0].price));
       dispatch(loadGuitarsCards(guitarsByQuery));
