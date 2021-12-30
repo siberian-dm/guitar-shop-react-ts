@@ -1,7 +1,7 @@
 import useQuery from '../../../../../hooks/use-query';
-import { AppRoute, QueryField } from '../../../../../const';
 import { ChangeEvent, useState } from 'react';
-import { getPriceMaxLimit, getPriceMinLimit } from '../../../../../store/reducers/catalog-slice/selectors';
+import { getCatalogRouteWithCurrentPage, getPriceMaxLimit, getPriceMinLimit } from '../../../../../store/reducers/catalog-slice/selectors';
+import { QueryField } from '../../../../../const';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { validatePriceMax, validatePriceMin } from '../../../../../utils/validate-price';
@@ -9,17 +9,18 @@ import { validatePriceMax, validatePriceMin } from '../../../../../utils/validat
 function FilterByPrice(): JSX.Element {
   const query = useQuery();
   const history = useHistory();
-  const queryPriceMin = query.get(QueryField.PriceMin) ?? '';
-  const queryPriceMax = query.get(QueryField.PriceMax) ?? '';
-
   const priceMinLimit = useSelector(getPriceMinLimit);
   const priceMaxLimit = useSelector(getPriceMaxLimit);
+  const catalogRouteWithCurrentPage = useSelector(getCatalogRouteWithCurrentPage);
+
+  const queryPriceMin = query.get(QueryField.PriceMin) ?? '';
+  const queryPriceMax = query.get(QueryField.PriceMax) ?? '';
 
   const [priceMin, setPriceMin] = useState(queryPriceMin);
   const [priceMax, setPriceMax] = useState(queryPriceMax);
 
   const applyQueryParams = () => {
-    history.push(`${AppRoute.Catalog}?${query}`);
+    history.push(`${catalogRouteWithCurrentPage}?${query}`);
   };
 
   const onPriceMinInputChange = (evt: ChangeEvent<HTMLInputElement>) => {

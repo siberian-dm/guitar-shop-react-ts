@@ -1,3 +1,5 @@
+const BASE = 10;
+
 const fillZero = (num: number, places: number) => {
   const zeroCount = places - num.toString().length;
 
@@ -25,4 +27,28 @@ export const formatPrice = (price: number) => {
   const priceInHundreds = millions !== 0 || thousands !==0 ? fillZero(hundreds, 3) : hundreds;
 
   return `${priceInMillions} ${priceInThousands} ${priceInHundreds} ₽`;
+};
+
+export const parseIntNumberFromString = (str: string) => {
+  const parsedIntNumber = parseInt(str, BASE);
+
+  if (isNaN(parsedIntNumber)) {
+    return null;
+  }
+
+  return parsedIntNumber;
+};
+
+export const parsePageNumberFromString = (str: string | undefined) => {
+  if (str === undefined) {
+    return 1;
+  }
+
+  const parsedPageNumber = parseIntNumberFromString(str);
+
+  if (parsedPageNumber === null) {
+    return 1;
+  }
+
+  return parsedPageNumber;
 };

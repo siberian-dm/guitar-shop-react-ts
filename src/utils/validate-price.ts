@@ -1,4 +1,4 @@
-const BASE = 10;
+import { parseIntNumberFromString } from './common';
 
 type TPriceRanges = {
   currentMin: string;
@@ -8,47 +8,47 @@ type TPriceRanges = {
 }
 
 export const validatePriceMin = ({ currentMin, currentMax, limitMin, limitMax }: TPriceRanges) => {
-  let min = parseInt(currentMin, BASE);
-  const max = parseInt(currentMax, BASE);
+  let parsedMin = parseIntNumberFromString(currentMin);
+  const parsedMax = parseIntNumberFromString(currentMax);
 
-  if (isNaN(min)) {
+  if (parsedMin === null) {
     return '';
   }
 
-  if (min < limitMin) {
-    min = limitMin;
+  if (parsedMin < limitMin) {
+    parsedMin = limitMin;
   }
 
-  if (!isNaN(max) && min > max) {
-    min = max;
+  if (parsedMax !== null && parsedMin > parsedMax) {
+    parsedMin = parsedMax;
   }
 
-  if (isNaN(max) && min > limitMax) {
-    min = limitMax;
+  if (parsedMax === null && parsedMin > limitMax) {
+    parsedMin = limitMax;
   }
 
-  return String(min);
+  return String(parsedMin);
 };
 
 export const validatePriceMax = ({ currentMin, currentMax, limitMin, limitMax }: TPriceRanges) => {
-  let max = parseInt(currentMax, BASE);
-  const min = parseInt(currentMin, BASE);
+  let parsedMax = parseIntNumberFromString(currentMax);
+  const parsedMin = parseIntNumberFromString(currentMin);
 
-  if (isNaN(max)) {
+  if (parsedMax === null) {
     return '';
   }
 
-  if (max > limitMax) {
-    max = limitMax;
+  if (parsedMax > limitMax) {
+    parsedMax = limitMax;
   }
 
-  if (!isNaN(min) && min > max) {
-    max = min;
+  if (parsedMin !== null && parsedMin > parsedMax) {
+    parsedMax = parsedMin;
   }
 
-  if (isNaN(min) && max < limitMin) {
-    max = limitMin;
+  if (parsedMin === null && parsedMax < limitMin) {
+    parsedMax = limitMin;
   }
 
-  return String(max);
+  return String(parsedMax);
 };

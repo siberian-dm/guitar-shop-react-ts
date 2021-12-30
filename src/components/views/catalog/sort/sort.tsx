@@ -1,19 +1,16 @@
 import classNames from 'classnames';
 import useQuery from '../../../../hooks/use-query';
-import {
-  AppRoute,
-  QueryField,
-  SortOrder,
-  SortType
-} from '../../../../const';
+import { getCatalogRouteWithCurrentPage } from '../../../../store/reducers/catalog-slice/selectors';
+import { QueryField, SortOrder, SortType } from '../../../../const';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function Sort(): JSX.Element {
   const query = useQuery();
+  const history = useHistory();
+  const catalogRouteWithCurrentPage = useSelector(getCatalogRouteWithCurrentPage);
   const activeSortType = query.get(QueryField.Sort);
   const activeSortOrder = query.get(QueryField.Order);
-
-  const history = useHistory();
 
   const applyQueryParams = (): void => {
     if (query.get(QueryField.Sort) === null) {
@@ -24,7 +21,7 @@ function Sort(): JSX.Element {
       query.set(QueryField.Order, SortOrder.Ascending);
     }
 
-    history.push(`${AppRoute.Catalog}?${query}`);
+    history.push(`${catalogRouteWithCurrentPage}?${query}`);
   };
 
   const onSortButtonClick = (sortType: SortType) => (): void => {

@@ -1,7 +1,6 @@
 import { parse, ParsedQuery, stringify } from 'query-string';
+import { parseIntNumberFromString } from './common';
 import { QueryField, SortOrder, SortType } from '../const';
-
-const BASE = 10;
 
 const validConstParams = {
   [QueryField.Sort]: [SortType.Price as string, SortType.Rating as string],
@@ -52,21 +51,11 @@ const validatePriceParams = (parsed: ParsedQuery) => {
   const priceMin = parsed[QueryField.PriceMin];
   const priceMax = parsed[QueryField.PriceMax];
 
-  if (typeof priceMin !== 'string') {
-    parsed[QueryField.PriceMin] = null;
-  }
-  else {
-    const priceMinToNumber = parseInt(priceMin, BASE);
-    parsed[QueryField.PriceMin] = isNaN(priceMinToNumber) ? null : String(priceMinToNumber);
-  }
+  const parsedPriceMin = parseIntNumberFromString(String(priceMin));
+  parsed[QueryField.PriceMin] = parsedPriceMin !== null ? String(parsedPriceMin) : null;
 
-  if (typeof priceMax !== 'string') {
-    parsed[QueryField.PriceMax] = null;
-  }
-  else {
-    const priceMaxToNumber = parseInt(priceMax, BASE);
-    parsed[QueryField.PriceMax] = isNaN(priceMaxToNumber) ? null : String(priceMaxToNumber);
-  }
+  const parsedPriceMax = parseIntNumberFromString(String(priceMax));
+  parsed[QueryField.PriceMax] = parsedPriceMax !== null ? String(parsedPriceMax) : null;
 
   return parsed;
 };

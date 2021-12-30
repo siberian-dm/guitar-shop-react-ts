@@ -2,10 +2,9 @@ import Empty from '../empty/empty';
 import Loader from '../../../common/loader/loader';
 import ProductCard from '../product-card/product-card';
 import useQuery from '../../../../hooks/use-query';
-import { AppRoute } from '../../../../const';
 import { fetchGuitarsByQuery } from '../../../../store/api-action';
 import { FetchState } from '../../../../types/store';
-import { getFetchState, getGuitarsCards } from '../../../../store/reducers/catalog-slice/selectors';
+import { getCatalogRouteWithCurrentPage, getFetchState, getGuitarsCards } from '../../../../store/reducers/catalog-slice/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -14,19 +13,21 @@ import { validateQueryParams } from '../../../../utils/validate-query-params';
 function ProductList(): JSX.Element {
   const query = useQuery();
   const history = useHistory();
-  const dispatch = useDispatch();
   const fetchState = useSelector(getFetchState);
   const guitarCards = useSelector(getGuitarsCards);
+  const catalogRouteWithCurrentPage = useSelector(getCatalogRouteWithCurrentPage);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const { queryString, isChanged } = validateQueryParams(query);
 
     if (isChanged) {
-      history.push(`${AppRoute.Catalog}?${queryString}`);
+      history.push(`${catalogRouteWithCurrentPage}?${queryString}`);
     }
 
     dispatch(fetchGuitarsByQuery(queryString));
-  }, [dispatch, history, query]);
+  }, [catalogRouteWithCurrentPage, dispatch, history, query]);
 
   if (fetchState === FetchState.Pending) {
     return <Loader />;

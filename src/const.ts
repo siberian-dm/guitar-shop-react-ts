@@ -1,9 +1,13 @@
+export const CATALOG_PAGE_SIZE = 6;
+
 export enum AppRoute {
   Root = '/',
-  Catalog = '/catalog',
+  Catalog = '/catalog/page_:page',
+  CatalogPage = '/catalog/page_',
+  CatalogInitialPage = '/catalog/page_1',
   Product = '/product',
   ProductById = '/product/:id',
-  NotFound = '/not-found'
+  NotFound = '/not_found'
 }
 
 export enum SortType {
