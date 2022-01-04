@@ -3,6 +3,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { getCatalogRouteWithCurrentPage } from '../../../../../store/reducers/catalog-slice/selectors';
 import { GuitarType, QueryField, StringCount } from '../../../../../const';
 import { parse, stringify } from 'query-string';
+import { parseArrayFromQueryByField } from '../../../../../utils/common';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -18,17 +19,8 @@ function FilterByStrings(): JSX.Element {
   const history = useHistory();
   const catalogRouteWithCurrentPage = useSelector(getCatalogRouteWithCurrentPage);
 
-  const queryString = query.toString();
-  const parsedQueryStringCounts = parse(queryString)[QueryField.StringCount];
-  const parsedQueryTypes = parse(queryString)[QueryField.Type];
-
-  const queryStringCounts = parsedQueryStringCounts && typeof parsedQueryStringCounts !== 'string'
-    ? parsedQueryStringCounts
-    : [parsedQueryStringCounts];
-
-  const queryTypes = parsedQueryTypes && typeof parsedQueryTypes !== 'string'
-    ? parsedQueryTypes
-    : [parsedQueryTypes];
+  const queryStringCounts = parseArrayFromQueryByField(query, QueryField.StringCount);
+  const queryTypes = parseArrayFromQueryByField(query, QueryField.Type);
 
   const isAcousticCheck = queryTypes.includes(GuitarType.Acoustic);
   const isElectricCheck = queryTypes.includes(GuitarType.Electric);
@@ -39,28 +31,43 @@ function FilterByStrings(): JSX.Element {
   const isSevenStringsDisabled = !isElectricCheck && !isAcousticCheck && isUkuleleCheck;
   const isTwelveStringsDisabled = !isAcousticCheck && (isUkuleleCheck || isElectricCheck);
 
-  const [isFourStringsCheck, setIsFourStringsCheck] = useState(
-    queryStringCounts.includes(StringCount.Four) && !isFourStringsDisabled,
-  );
-  const [isSixStringsCheck, setIsSixStringsCheck] = useState(
-    queryStringCounts.includes(StringCount.Six) && !isSixStringsDisabled,
-  );
-  const [isSevenStringsCheck, setIsSevenStringsCheck] = useState(
-    queryStringCounts.includes(StringCount.Seven) && !isSevenStringsDisabled,
-  );
-  const [isTwelveStringsCheck, setIsTwelveStringsCheck] = useState(
-    queryStringCounts.includes(StringCount.Twelve) && !isTwelveStringsDisabled,
-  );
+  const [isFourStringsCheck, setIsFourStringsCheck] = useState(false);
+  const [isSixStringsCheck, setIsSixStringsCheck] = useState(false);
+  const [isSevenStringsCheck, setIsSevenStringsCheck] = useState(false);
+  const [isTwelveStringsCheck, setIsTwelveStringsCheck] = useState(false);
 
   useEffect(() => {
+    setIsFourStringsCheck(
+      queryStringCounts.includes(StringCount.Four) && !isFourStringsDisabled,
+    );
+    setIsSixStringsCheck(
+      queryStringCounts.includes(StringCount.Six) && !isSixStringsDisabled,
+    );
+    setIsSevenStringsCheck(
+      queryStringCounts.includes(StringCount.Seven) && !isSevenStringsDisabled,
+    );
+    setIsTwelveStringsCheck(
+      queryStringCounts.includes(StringCount.Twelve) && !isTwelveStringsDisabled,
+    );
+  },
+  [
+    isFourStringsDisabled,
+    isSevenStringsDisabled,
+    isSixStringsDisabled,
+    isTwelveStringsDisabled,
+    queryStringCounts,
+  ]);
+
+  useEffect(() => {
+    const queryString = query.toString();
     const newQueryString = stringify(
       {
         ...parse(queryString),
         [QueryField.StringCount]: [
-          `${isFourStringsCheck && !isFourStringsDisabled ? StringCount.Four : ''}`,
-          `${isSixStringsCheck && !isSixStringsDisabled ? StringCount.Six : ''}`,
-          `${isSevenStringsCheck && !isSevenStringsDisabled ? StringCount.Seven : ''}`,
-          `${isTwelveStringsCheck && !isTwelveStringsDisabled ? StringCount.Twelve : ''}`,
+          `${isFourStringsCheck ? StringCount.Four : ''}`,
+          `${isSixStringsCheck ? StringCount.Six : ''}`,
+          `${isSevenStringsCheck ? StringCount.Seven : ''}`,
+          `${isTwelveStringsCheck ? StringCount.Twelve : ''}`,
         ],
       },
       {skipEmptyString: true},
@@ -74,14 +81,10 @@ function FilterByStrings(): JSX.Element {
     catalogRouteWithCurrentPage,
     history,
     isFourStringsCheck,
-    isFourStringsDisabled,
     isSevenStringsCheck,
-    isSevenStringsDisabled,
     isSixStringsCheck,
-    isSixStringsDisabled,
     isTwelveStringsCheck,
-    isTwelveStringsDisabled,
-    queryString,
+    query,
   ]);
 
   const onCheckboxChange = (evt: ChangeEvent) => {

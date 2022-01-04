@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import PageLink from './page-link/page-link';
 import useQuery from '../../../../hooks/use-query';
 import { AppRoute, CATALOG_PAGE_SIZE, QueryField } from '../../../../const';
 import { getPageNumbers } from '../../../../store/reducers/catalog-slice/selectors';
@@ -24,6 +24,9 @@ function Pagination(): JSX.Element {
 
   const [pageSlice, setPageSlice] = useState<number[] | []>([]);
 
+  const isShowPrevBtn = pageSlice[0] > pageNumbers[0];
+  const isShowNextBtn = pageSlice[pageSlice.length - 1] < pageNumbers[pageNumbers.length -1];
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -43,7 +46,7 @@ function Pagination(): JSX.Element {
   return (
     <div className="pagination page-content__pagination">
       <ul className="pagination__list">
-        {pageSlice[0] > pageNumbers[0] && (
+        {isShowPrevBtn && (
           <li className="pagination__page pagination__page--prev" id="prev">
             <Link
               className="link pagination__page-link"
@@ -53,24 +56,14 @@ function Pagination(): JSX.Element {
             </Link>
           </li>
         )}
-        {pageSlice.length !== 0 && pageSlice.map((value) => {
-          const paginationliClass = classNames(
-            'pagination__page',
-            {'pagination__page--active': value === pageNumber},
-          );
-
-          return (
-            <li key={value} className={paginationliClass}>
-              <Link
-                className="link pagination__page-link"
-                to={`${AppRoute.CatalogPage}${value}?${query}`}
-              >
-                {value}
-              </Link>
-            </li>
-          );
-        })}
-        {pageSlice[pageSlice.length - 1] < pageNumbers[pageNumbers.length -1] && (
+        {pageSlice.length !== 0 && pageSlice.map((value) => (
+          <PageLink
+            key={value}
+            pageNumber={value}
+            isActive={value === pageNumber}
+          />
+        ))}
+        {isShowNextBtn && (
           <li className="pagination__page pagination__page--next" id="next">
             <Link
               className="link pagination__page-link"
