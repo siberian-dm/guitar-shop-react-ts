@@ -1,8 +1,9 @@
 import useQuery from '../../../../../hooks/use-query';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { getCatalogRouteWithCurrentPage } from '../../../../../store/reducers/catalog-slice/selectors';
-import { GuitarType, QueryField } from '../../../../../const';
+import { GuitarType, QueryField, StringCount } from '../../../../../const';
 import { parse, stringify } from 'query-string';
+import { parseArrayFromQueryByField } from '../../../../../utils/common';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -17,18 +18,42 @@ function FilterByType(): JSX.Element {
   const history = useHistory();
   const catalogRouteWithCurrentPage = useSelector(getCatalogRouteWithCurrentPage);
 
-  const queryString = query.toString();
-  const parsedQueryTypes = parse(queryString)[QueryField.Type];
+  const queryStringCounts = parseArrayFromQueryByField(query, QueryField.StringCount);
+  const queryTypes = parseArrayFromQueryByField(query, QueryField.Type);
 
-  const queryTypes = parsedQueryTypes && typeof parsedQueryTypes !== 'string'
-    ? parsedQueryTypes
-    : [parsedQueryTypes];
+  const isFourStringsCheck = queryStringCounts.includes(StringCount.Four);
+  const isSixStringsCheck = queryStringCounts.includes(StringCount.Six);
+  const isSevenStringsCheck = queryStringCounts.includes(StringCount.Seven);
+  const isTwelveStringsCheck = queryStringCounts.includes(StringCount.Twelve);
 
-  const [isAcousticCheck, setIsAcousticCheck] = useState(queryTypes.includes(GuitarType.Acoustic));
-  const [isElectricCheck, setIsElectricCheck] = useState(queryTypes.includes(GuitarType.Electric));
-  const [isUkuleleCheck, setIsUkuleleCheck] = useState(queryTypes.includes(GuitarType.Ukulele));
+  const isAcousticDisabled = isFourStringsCheck;
+  const isElectricDisabled = isTwelveStringsCheck;
+  const isUkuleleDisabled = isSixStringsCheck || isSevenStringsCheck || isTwelveStringsCheck;
+
+  const [isAcousticCheck, setIsAcousticCheck] = useState(false);
+  const [isElectricCheck, setIsElectricCheck] = useState(false);
+  const [isUkuleleCheck, setIsUkuleleCheck] = useState(false);
 
   useEffect(() => {
+    setIsAcousticCheck(
+      queryTypes.includes(GuitarType.Acoustic) && !isAcousticDisabled,
+    );
+    setIsElectricCheck(
+      queryTypes.includes(GuitarType.Electric) && !isElectricDisabled,
+    );
+    setIsUkuleleCheck(
+      queryTypes.includes(GuitarType.Ukulele) && !isUkuleleDisabled,
+    );
+  },
+  [
+    isAcousticDisabled,
+    isElectricDisabled,
+    isUkuleleDisabled,
+    queryTypes,
+  ]);
+
+  useEffect(() => {
+    const queryString = query.toString();
     const newQueryString = stringify(
       {
         ...parse(queryString),
@@ -51,7 +76,7 @@ function FilterByType(): JSX.Element {
     isAcousticCheck,
     isElectricCheck,
     isUkuleleCheck,
-    queryString,
+    query,
   ]);
 
   const onCheckboxChange = (evt: ChangeEvent) => {
@@ -77,6 +102,7 @@ function FilterByType(): JSX.Element {
           id={CheckBoxName.Acoustic}
           name={CheckBoxName.Acoustic}
           checked={isAcousticCheck}
+          disabled={isAcousticDisabled}
           onChange={onCheckboxChange}
         />
         <label htmlFor={CheckBoxName.Acoustic}>Акустические гитары</label>
@@ -88,6 +114,7 @@ function FilterByType(): JSX.Element {
           id={CheckBoxName.Electric}
           name={CheckBoxName.Electric}
           checked={isElectricCheck}
+          disabled={isElectricDisabled}
           onChange={onCheckboxChange}
         />
         <label htmlFor={CheckBoxName.Electric}>Электрогитары</label>
@@ -99,6 +126,7 @@ function FilterByType(): JSX.Element {
           id={CheckBoxName.Ukulele}
           name={CheckBoxName.Ukulele}
           checked={isUkuleleCheck}
+          disabled={isUkuleleDisabled}
           onChange={onCheckboxChange}
         />
         <label htmlFor={CheckBoxName.Ukulele}>Укулеле</label>
