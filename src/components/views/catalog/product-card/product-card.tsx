@@ -1,5 +1,6 @@
 import ProductRate, { RateType } from '../../../common/product-rate/product-rate';
 import { formatPrice } from '../../../../utils/common';
+import { Link } from 'react-router-dom';
 import { TGuitarCard } from '../../../../types/app-data';
 
 type TProps = {
@@ -34,12 +35,24 @@ function ProductCard({ card }: TProps): JSX.Element {
         </p>
       </div>
       <div className="product-card__buttons">
-        <a className="button button--mini" href="#no_scroll">
+        <Link
+          className="button button--mini"
+          to={''}
+          onClick={(evt) => {
+            evt.preventDefault();
+          }}
+        >
           Подробнее
-        </a>
-        <a className="button button--red button--mini button--add-to-cart" href="#no_scroll">
+        </Link>
+        <Link
+          className="button button--red button--mini button--add-to-cart"
+          to={''}
+          onClick={(evt) => {
+            evt.preventDefault();
+          }}
+        >
           Купить
-        </a>
+        </Link>
       </div>
     </div>
   );
