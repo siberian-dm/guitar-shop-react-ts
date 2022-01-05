@@ -1,10 +1,10 @@
+import Logo, { LogoType } from '../logo/logo';
+
 function Footer(): JSX.Element {
   return (
     <footer className="footer">
       <div className="footer__container container">
-        <a className="footer__logo logo" href="#no_scroll">
-          <img className="logo__img" width="70" height="70" src="/img/svg/logo.svg" alt="Логотип"/>
-        </a>
+        <Logo type={LogoType.Footer}/>
         <div className="socials footer__socials">
           <ul className="socials__list">
             <li className="socials-item">
