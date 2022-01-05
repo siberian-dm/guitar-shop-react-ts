@@ -5,6 +5,7 @@ import { APIRoute, createAPI } from '../../../../services/api';
 import { AppRoute } from '../../../../const';
 import {
   ChangeEvent,
+  FormEvent,
   useEffect,
   useRef,
   useState
@@ -61,12 +62,16 @@ function SearchForm(): JSX.Element {
   }, [debouncedSearch, searchCriteria]);
 
 
-  const onSearchInputChange = (evt: ChangeEvent<HTMLInputElement>): void => {
+  const onSearchInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setSearchCriteria(evt.target.value);
   };
 
-  const onSelectItemClick = (id: number) => (): void => {
+  const onSelectItemClick = (id: number) => () => {
     history.push(`${AppRoute.Product}/${id}`);
+  };
+
+  const onFormSubmit = (evt: FormEvent) => {
+    evt.preventDefault();
   };
 
   const selectListClass = classNames(
@@ -78,7 +83,7 @@ function SearchForm(): JSX.Element {
 
   return (
     <div className="form-search">
-      <form className="form-search__form">
+      <form className="form-search__form" onSubmit={onFormSubmit}>
         <button className="form-search__submit" type="submit">
           <svg className="form-search__icon" width="14" height="15" aria-hidden="true">
             <use xlinkHref="#icon-search"></use>
