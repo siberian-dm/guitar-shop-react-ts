@@ -1,5 +1,4 @@
 import { parse } from 'query-string';
-import { QueryField } from '../const';
 
 const BASE = 10;
 
@@ -29,7 +28,7 @@ export const formatPrice = (price: number) => {
 
   const priceInHundreds = millions !== 0 || thousands !==0 ? fillZero(hundreds, 3) : hundreds;
 
-  return `${priceInMillions} ${priceInThousands} ${priceInHundreds} ₽`;
+  return `${priceInMillions} ${priceInThousands} ${priceInHundreds} ₽`.trim();
 };
 
 export const parseIntNumberFromString = (str: string) => {
@@ -56,7 +55,7 @@ export const parsePageNumberFromString = (str: string | undefined) => {
   return parsedPageNumber;
 };
 
-export const parseArrayFromQueryByField = (query: URLSearchParams, field: QueryField) => {
+export const parseArrayFromQueryByField = (query: URLSearchParams, field: string) => {
   const queryString = query.toString();
   const parsedParams = parse(queryString)[field];
 
