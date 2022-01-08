@@ -1,4 +1,4 @@
-import { formatPrice, parseArrayFromQueryByField, parseIntNumberFromString } from './common';
+import { formatPrice, parseIntNumberFromString } from './common';
 
 describe('Function: formatPrice', () => {
   it('should return "1 010 009 ₽" when price is 1010009', () => {
@@ -24,20 +24,5 @@ describe('Function: parseIntNumberFromString', () => {
   });
   it('should return null when string is ""', () => {
     expect(parseIntNumberFromString('')).toBe(null);
-  });
-});
-
-describe('Function: parseArrayFromQueryByField', () => {
-  const queryString = 'key1=value1&key1=value2&key1=value3&key2=value1';
-  const query = new URLSearchParams(queryString);
-
-  it('should return "["value1", "value2", "value3"]" when field is "key1"', () => {
-    expect(parseArrayFromQueryByField(query, 'key1')).toStrictEqual(['value1', 'value2', 'value3']);
-  });
-  it('should return "["value1"]" when field is "key2"', () => {
-    expect(parseArrayFromQueryByField(query, 'key2')).toStrictEqual(['value1']);
-  });
-  it('should return "[]" when field is "key3"', () => {
-    expect(parseArrayFromQueryByField(query, 'key3')).toStrictEqual([]);
   });
 });

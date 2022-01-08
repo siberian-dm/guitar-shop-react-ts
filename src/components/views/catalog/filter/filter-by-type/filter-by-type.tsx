@@ -1,11 +1,6 @@
-import useQuery from '../../../../../hooks/use-query';
+import { ArrayParam, useQueryParam, withDefault } from 'use-query-params';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { getCatalogRouteWithCurrentPage } from '../../../../../store/reducers/catalog-slice/selectors';
 import { GuitarType, QueryField, StringCount } from '../../../../../const';
-import { parse, stringify } from 'query-string';
-import { parseArrayFromQueryByField } from '../../../../../utils/common';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 const enum CheckBoxName {
   Acoustic = 'acoustic',
@@ -14,69 +9,51 @@ const enum CheckBoxName {
 }
 
 function FilterByType(): JSX.Element {
-  const query = useQuery();
-  const history = useHistory();
-  const catalogRouteWithCurrentPage = useSelector(getCatalogRouteWithCurrentPage);
-
-  const queryStringCounts = parseArrayFromQueryByField(query, QueryField.StringCount);
-  const queryTypes = parseArrayFromQueryByField(query, QueryField.Type);
+  const [queryTypes, setQueryTypes] = useQueryParam(
+    QueryField.Type,
+    withDefault(ArrayParam, [] as string[]),
+  );
+  const [queryStringCounts] = useQueryParam(
+    QueryField.StringCount,
+    withDefault(ArrayParam, [] as string[]),
+  );
 
   const isFourStringsCheck = queryStringCounts.includes(StringCount.Four);
   const isSixStringsCheck = queryStringCounts.includes(StringCount.Six);
   const isSevenStringsCheck = queryStringCounts.includes(StringCount.Seven);
   const isTwelveStringsCheck = queryStringCounts.includes(StringCount.Twelve);
 
-  const isAcousticDisabled = isFourStringsCheck;
-  const isElectricDisabled = isTwelveStringsCheck;
-  const isUkuleleDisabled = isSixStringsCheck || isSevenStringsCheck || isTwelveStringsCheck;
+  const isAcousticDisabled = isFourStringsCheck && !isSixStringsCheck && !isSevenStringsCheck && !isTwelveStringsCheck;
+  const isElectricDisabled = isTwelveStringsCheck && !isFourStringsCheck && !isSixStringsCheck && !isSevenStringsCheck;
+  const isUkuleleDisabled = (isSixStringsCheck || isSevenStringsCheck || isTwelveStringsCheck) && !isFourStringsCheck;
 
-  const [isAcousticCheck, setIsAcousticCheck] = useState(false);
-  const [isElectricCheck, setIsElectricCheck] = useState(false);
-  const [isUkuleleCheck, setIsUkuleleCheck] = useState(false);
-
-  useEffect(() => {
-    setIsAcousticCheck(
-      queryTypes.includes(GuitarType.Acoustic) && !isAcousticDisabled,
-    );
-    setIsElectricCheck(
-      queryTypes.includes(GuitarType.Electric) && !isElectricDisabled,
-    );
-    setIsUkuleleCheck(
-      queryTypes.includes(GuitarType.Ukulele) && !isUkuleleDisabled,
-    );
-  },
-  [
-    isAcousticDisabled,
-    isElectricDisabled,
-    isUkuleleDisabled,
-    queryTypes,
-  ]);
+  const [isAcousticCheck, setIsAcousticCheck] = useState(
+    queryTypes.includes(GuitarType.Acoustic) && !isAcousticDisabled,
+  );
+  const [isElectricCheck, setIsElectricCheck] = useState(
+    queryTypes.includes(GuitarType.Electric) && !isElectricDisabled,
+  );
+  const [isUkuleleCheck, setIsUkuleleCheck] = useState(
+    queryTypes.includes(GuitarType.Ukulele) && !isUkuleleDisabled,
+  );
 
   useEffect(() => {
-    const queryString = query.toString();
-    const newQueryString = stringify(
-      {
-        ...parse(queryString),
-        [QueryField.Type]: [
-          `${isAcousticCheck ? GuitarType.Acoustic : ''}`,
-          `${isElectricCheck ? GuitarType.Electric : ''}`,
-          `${isUkuleleCheck ? GuitarType.Ukulele : ''}`,
-        ],
-      },
-      {skipEmptyString: true},
-    );
+    const newQueryTypes = [
+      `${isAcousticCheck && !isAcousticDisabled ? GuitarType.Acoustic : ''}`,
+      `${isElectricCheck && !isElectricDisabled ? GuitarType.Electric : ''}`,
+      `${isUkuleleCheck && !isUkuleleDisabled ? GuitarType.Ukulele : ''}`,
+    ].filter((item) => item !== '');
 
-    if (newQueryString !== queryString) {
-      history.push(`${catalogRouteWithCurrentPage}?${newQueryString}`);
-    }
+    setQueryTypes(newQueryTypes);
   },
   [
-    catalogRouteWithCurrentPage,
-    history,
     isAcousticCheck,
+    isAcousticDisabled,
     isElectricCheck,
+    isElectricDisabled,
     isUkuleleCheck,
-    query,
+    isUkuleleDisabled,
+    setQueryTypes,
   ]);
 
   const onCheckboxChange = (evt: ChangeEvent) => {

@@ -1,11 +1,6 @@
-import useQuery from '../../../../../hooks/use-query';
+import { ArrayParam, useQueryParam, withDefault } from 'use-query-params';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { getCatalogRouteWithCurrentPage } from '../../../../../store/reducers/catalog-slice/selectors';
 import { GuitarType, QueryField, StringCount } from '../../../../../const';
-import { parse, stringify } from 'query-string';
-import { parseArrayFromQueryByField } from '../../../../../utils/common';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 const enum CheckBoxName {
   FourStrings = '4-strings',
@@ -15,12 +10,14 @@ const enum CheckBoxName {
 }
 
 function FilterByStrings(): JSX.Element {
-  const query = useQuery();
-  const history = useHistory();
-  const catalogRouteWithCurrentPage = useSelector(getCatalogRouteWithCurrentPage);
-
-  const queryStringCounts = parseArrayFromQueryByField(query, QueryField.StringCount);
-  const queryTypes = parseArrayFromQueryByField(query, QueryField.Type);
+  const [queryTypes] = useQueryParam(
+    QueryField.Type,
+    withDefault(ArrayParam, [] as string[]),
+  );
+  const [queryStringCounts, setQueryStringCounts] = useQueryParam(
+    QueryField.StringCount,
+    withDefault(ArrayParam, [] as string[]),
+  );
 
   const isAcousticCheck = queryTypes.includes(GuitarType.Acoustic);
   const isElectricCheck = queryTypes.includes(GuitarType.Electric);
@@ -31,60 +28,39 @@ function FilterByStrings(): JSX.Element {
   const isSevenStringsDisabled = !isElectricCheck && !isAcousticCheck && isUkuleleCheck;
   const isTwelveStringsDisabled = !isAcousticCheck && (isUkuleleCheck || isElectricCheck);
 
-  const [isFourStringsCheck, setIsFourStringsCheck] = useState(false);
-  const [isSixStringsCheck, setIsSixStringsCheck] = useState(false);
-  const [isSevenStringsCheck, setIsSevenStringsCheck] = useState(false);
-  const [isTwelveStringsCheck, setIsTwelveStringsCheck] = useState(false);
+  const [isFourStringsCheck, setIsFourStringsCheck] = useState(
+    queryStringCounts.includes(StringCount.Four) && !isFourStringsDisabled,
+  );
+  const [isSixStringsCheck, setIsSixStringsCheck] = useState(
+    queryStringCounts.includes(StringCount.Six) && !isSixStringsDisabled,
+  );
+  const [isSevenStringsCheck, setIsSevenStringsCheck] = useState(
+    queryStringCounts.includes(StringCount.Seven) && !isSevenStringsDisabled,
+  );
+  const [isTwelveStringsCheck, setIsTwelveStringsCheck] = useState(
+    queryStringCounts.includes(StringCount.Twelve) && !isTwelveStringsDisabled,
+  );
 
   useEffect(() => {
-    setIsFourStringsCheck(
-      queryStringCounts.includes(StringCount.Four) && !isFourStringsDisabled,
-    );
-    setIsSixStringsCheck(
-      queryStringCounts.includes(StringCount.Six) && !isSixStringsDisabled,
-    );
-    setIsSevenStringsCheck(
-      queryStringCounts.includes(StringCount.Seven) && !isSevenStringsDisabled,
-    );
-    setIsTwelveStringsCheck(
-      queryStringCounts.includes(StringCount.Twelve) && !isTwelveStringsDisabled,
-    );
+    const newQueryStringCounts = [
+      `${isFourStringsCheck && !isFourStringsDisabled? StringCount.Four : ''}`,
+      `${isSixStringsCheck && !isSixStringsDisabled? StringCount.Six : ''}`,
+      `${isSevenStringsCheck && !isSevenStringsDisabled? StringCount.Seven : ''}`,
+      `${isTwelveStringsCheck && !isTwelveStringsDisabled? StringCount.Twelve : ''}`,
+    ].filter((item) => item !== '');
+
+    setQueryStringCounts(newQueryStringCounts);
   },
   [
-    isFourStringsDisabled,
-    isSevenStringsDisabled,
-    isSixStringsDisabled,
-    isTwelveStringsDisabled,
-    queryStringCounts,
-  ]);
-
-  useEffect(() => {
-    const queryString = query.toString();
-    const newQueryString = stringify(
-      {
-        ...parse(queryString),
-        [QueryField.StringCount]: [
-          `${isFourStringsCheck ? StringCount.Four : ''}`,
-          `${isSixStringsCheck ? StringCount.Six : ''}`,
-          `${isSevenStringsCheck ? StringCount.Seven : ''}`,
-          `${isTwelveStringsCheck ? StringCount.Twelve : ''}`,
-        ],
-      },
-      {skipEmptyString: true},
-    );
-
-    if (newQueryString !== queryString) {
-      history.push(`${catalogRouteWithCurrentPage}?${newQueryString}`);
-    }
-  },
-  [
-    catalogRouteWithCurrentPage,
-    history,
     isFourStringsCheck,
+    isFourStringsDisabled,
     isSevenStringsCheck,
+    isSevenStringsDisabled,
     isSixStringsCheck,
+    isSixStringsDisabled,
     isTwelveStringsCheck,
-    query,
+    isTwelveStringsDisabled,
+    setQueryStringCounts,
   ]);
 
   const onCheckboxChange = (evt: ChangeEvent) => {

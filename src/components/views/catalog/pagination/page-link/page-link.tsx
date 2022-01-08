@@ -1,7 +1,6 @@
 import classNames from 'classnames';
-import useQuery from '../../../../../hooks/use-query';
 import { AppRoute } from '../../../../../const';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 type TProps = {
   pageNumber: number;
@@ -9,7 +8,7 @@ type TProps = {
 }
 
 function PageLink({ pageNumber, isActive }: TProps): JSX.Element {
-  const query = useQuery();
+  const { search } = useLocation();
 
   const linkClass = classNames(
     'pagination__page',
@@ -20,7 +19,7 @@ function PageLink({ pageNumber, isActive }: TProps): JSX.Element {
     <li key={pageNumber} className={linkClass}>
       <Link
         className="link pagination__page-link"
-        to={`${AppRoute.CatalogPage}${pageNumber}?${query}`}
+        to={`${AppRoute.CatalogPage}${pageNumber}${search}`}
       >
         {pageNumber}
       </Link>

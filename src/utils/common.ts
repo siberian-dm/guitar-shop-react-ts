@@ -1,5 +1,3 @@
-import { parse } from 'query-string';
-
 const BASE = 10;
 
 const fillZero = (num: number, places: number) => {
@@ -53,19 +51,4 @@ export const parsePageNumberFromString = (str: string | undefined) => {
   }
 
   return parsedPageNumber;
-};
-
-export const parseArrayFromQueryByField = (query: URLSearchParams, field: string) => {
-  const queryString = query.toString();
-  const parsedParams = parse(queryString)[field];
-
-  if (!parsedParams) {
-    return [];
-  }
-  else if (typeof parsedParams !== 'string') {
-    return parsedParams;
-  }
-  else {
-    return [parsedParams];
-  }
 };
