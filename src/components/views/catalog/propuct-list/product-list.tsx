@@ -16,7 +16,9 @@ function ProductList(): JSX.Element {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchGuitarsByQuery(search.slice(1)));
+    if (search) {
+      dispatch(fetchGuitarsByQuery(search.slice(1)));
+    }
   },
   [dispatch, search]);
 
