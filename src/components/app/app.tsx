@@ -2,16 +2,12 @@ import Catalog from '../views/catalog/catalog';
 import NotFound from '../views/not-found/not-found';
 import Product from '../views/product/product';
 import { AppRoute } from '../../const';
-import {
-  BrowserRouter,
-  Redirect,
-  Route,
-  Switch
-} from 'react-router-dom';
+import { QueryParamProvider } from 'use-query-params';
+import { Redirect, Route, Switch } from 'react-router-dom';
 
 function App(): JSX.Element {
   return (
-    <BrowserRouter>
+    <QueryParamProvider ReactRouterRoute={Route}>
       <Switch>
         <Route path={AppRoute.Root} exact>
           <Redirect to={AppRoute.CatalogInitialPage}/>
@@ -29,7 +25,7 @@ function App(): JSX.Element {
           <Redirect to={AppRoute.NotFound}/>
         </Route>
       </Switch>
-    </BrowserRouter>
+    </QueryParamProvider>
   );
 }
 

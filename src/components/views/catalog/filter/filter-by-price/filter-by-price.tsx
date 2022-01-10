@@ -1,27 +1,28 @@
-import useQuery from '../../../../../hooks/use-query';
-import { ChangeEvent, useState } from 'react';
-import { getCatalogRouteWithCurrentPage, getPriceMaxLimit, getPriceMinLimit } from '../../../../../store/reducers/catalog-slice/selectors';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { getPriceMaxLimit, getPriceMinLimit } from '../../../../../store/reducers/catalog-slice/selectors';
+import { NumberParam, useQueryParam } from 'use-query-params';
 import { QueryField } from '../../../../../const';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { validatePriceMax, validatePriceMin } from '../../../../../utils/validate-price';
 
 function FilterByPrice(): JSX.Element {
-  const query = useQuery();
-  const history = useHistory();
+  const [priceMin, setPriceMin] = useState('');
+  const [priceMax, setPriceMax] = useState('');
+
+  const [queryPriceMin, setQueryPriceMin] = useQueryParam(QueryField.PriceMin, NumberParam);
+  const [queryPriceMax, setQueryPriceMax] = useQueryParam(QueryField.PriceMax, NumberParam);
+
   const priceMinLimit = useSelector(getPriceMinLimit);
   const priceMaxLimit = useSelector(getPriceMaxLimit);
-  const catalogRouteWithCurrentPage = useSelector(getCatalogRouteWithCurrentPage);
 
-  const queryPriceMin = query.get(QueryField.PriceMin) ?? '';
-  const queryPriceMax = query.get(QueryField.PriceMax) ?? '';
+  useEffect(() => {
+    const initialMin = queryPriceMin ? String(queryPriceMin) : '';
+    const initialMax = queryPriceMax ? String(queryPriceMax) : '';
 
-  const [priceMin, setPriceMin] = useState(queryPriceMin);
-  const [priceMax, setPriceMax] = useState(queryPriceMax);
-
-  const applyQueryParams = () => {
-    history.push(`${catalogRouteWithCurrentPage}?${query}`);
-  };
+    setPriceMin(initialMin);
+    setPriceMax(initialMax);
+  },
+  [queryPriceMax, queryPriceMin]);
 
   const onPriceMinInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setPriceMin(evt.target.value);
@@ -39,11 +40,16 @@ function FilterByPrice(): JSX.Element {
       limitMax: priceMaxLimit,
     });
 
-    setPriceMin(validatedPriceMin);
+    const newQueryPriceMin = validatedPriceMin !== ''
+      ? Number(validatedPriceMin)
+      : undefined;
 
-    if (validatedPriceMin !== queryPriceMin) {
-      query.set(QueryField.PriceMin, validatedPriceMin);
-      applyQueryParams();
+    if (validatedPriceMin !== priceMin) {
+      setPriceMin(validatedPriceMin);
+    }
+
+    if (newQueryPriceMin !== queryPriceMin) {
+      setQueryPriceMin(newQueryPriceMin);
     }
   };
 
@@ -55,11 +61,16 @@ function FilterByPrice(): JSX.Element {
       limitMax: priceMaxLimit,
     });
 
-    setPriceMax(validatedPriceMax);
+    const newQueryPriceMax = validatedPriceMax !== ''
+      ? Number(validatedPriceMax)
+      : undefined;
 
-    if (validatedPriceMax !== queryPriceMax) {
-      query.set(QueryField.PriceMax, validatedPriceMax);
-      applyQueryParams();
+    if (validatedPriceMax !== priceMax) {
+      setPriceMax(validatedPriceMax);
+    }
+
+    if (newQueryPriceMax !== queryPriceMax) {
+      setQueryPriceMax(newQueryPriceMax);
     }
   };
 

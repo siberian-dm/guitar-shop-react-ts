@@ -42,7 +42,7 @@ export const validatePriceMax = ({ currentMin, currentMax, limitMin, limitMax }:
     parsedMax = limitMax;
   }
 
-  if (parsedMin !== null && parsedMin > parsedMax) {
+  if (parsedMin !== null && parsedMax < parsedMin) {
     parsedMax = parsedMin;
   }
 

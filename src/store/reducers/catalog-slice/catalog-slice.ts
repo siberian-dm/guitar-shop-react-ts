@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { FetchState, ReducerName, TCatalogDataState } from '../../../types/store';
 
-const initialState: TCatalogDataState = {
+export const initialState: TCatalogDataState = {
   guitarsCards: [],
   fetchState: FetchState.Idle,
   priceMinLimit: 0,

@@ -1,37 +1,25 @@
 import classNames from 'classnames';
-import useQuery from '../../../../hooks/use-query';
-import { getCatalogRouteWithCurrentPage } from '../../../../store/reducers/catalog-slice/selectors';
 import { QueryField, SortOrder, SortType } from '../../../../const';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { StringParam, useQueryParam } from 'use-query-params';
 
 function Sort(): JSX.Element {
-  const query = useQuery();
-  const history = useHistory();
-  const catalogRouteWithCurrentPage = useSelector(getCatalogRouteWithCurrentPage);
-  const activeSortType = query.get(QueryField.Sort);
-  const activeSortOrder = query.get(QueryField.Order);
-
-  const applyQueryParams = (): void => {
-    if (query.get(QueryField.Sort) === null) {
-      query.set(QueryField.Sort, SortType.Price);
-    }
-
-    if (query.get(QueryField.Order) === null) {
-      query.set(QueryField.Order, SortOrder.Ascending);
-    }
-
-    history.push(`${catalogRouteWithCurrentPage}?${query}`);
-  };
+  const [activeSortType, setActiveSortType] = useQueryParam(QueryField.Sort, StringParam);
+  const [activeSortOrder, setActiveSortOrder] = useQueryParam(QueryField.Order, StringParam);
 
   const onSortButtonClick = (sortType: SortType) => (): void => {
-    query.set(QueryField.Sort, sortType);
-    applyQueryParams();
+    setActiveSortType(sortType);
+
+    if (!activeSortOrder) {
+      setActiveSortOrder(SortOrder.Ascending);
+    }
   };
 
   const onOrderButtonClick = (sortOrder: SortOrder) => (): void => {
-    query.set(QueryField.Order, sortOrder);
-    applyQueryParams();
+    setActiveSortOrder(sortOrder);
+
+    if (!activeSortType) {
+      setActiveSortType(SortType.Price);
+    }
   };
 
   const sortByPriceButtonClass = classNames(
