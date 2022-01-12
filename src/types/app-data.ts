@@ -23,3 +23,7 @@ export type TGuitarCard = {
 }
 
 export type TGuitarCards = TGuitarCard[];
+
+export type TSearchedGuitar = Pick<TGuitarCard, 'id' | 'name'>;
+
+export type TSearchedGuitars = TSearchedGuitar[];
