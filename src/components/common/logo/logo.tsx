@@ -9,10 +9,10 @@ export enum LogoType {
 }
 
 type TProps = {
-  type: LogoType;
+  type?: LogoType;
 }
 
-function Logo({ type }: TProps): JSX.Element {
+function Logo({ type = LogoType.Header }: TProps): JSX.Element {
   const { pathname } = useLocation();
 
   const isNotActiveLink = pathname.includes(AppRoute.CatalogPage);
