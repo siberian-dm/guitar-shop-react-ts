@@ -7,7 +7,7 @@ export enum RateType {
   ProductPage,
 }
 
-const svgParams = {
+export const svgParams = {
   [RateType.ProductCard]: {
     width: 12,
     height: 11,
@@ -39,12 +39,16 @@ function ProductRate({ rating, rateType, rateCount }: TProps): JSX.Element {
       <span className="visually-hidden">Рейтинг:</span>
       {RATES.map((value) => (
         <svg
+          data-testid="svg-icon"
           width={svgParams[rateType].width}
           height={svgParams[rateType].height}
           aria-hidden="true"
           key={value}
         >
-          <use xlinkHref={value <= roundRating ? '#icon-full-star' : '#icon-star'}/>
+          <use
+            data-testid={value <= roundRating ? 'full-star' : 'star'}
+            xlinkHref={value <= roundRating ? '#icon-full-star' : '#icon-star'}
+          />
         </svg>
       ))}
       <span className="rate__count">{rateCount && rateCount}</span><span className="rate__message"/>
