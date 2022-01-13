@@ -7,6 +7,7 @@ import { getFetchState, getGuitarsCards } from '../../../../store/reducers/catal
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { resetCatalogState } from '../../../../store/reducers/catalog-slice/catalog-slice';
 
 function ProductList(): JSX.Element {
   const { search } = useLocation();
@@ -19,6 +20,9 @@ function ProductList(): JSX.Element {
     if (search) {
       dispatch(fetchGuitarsByQuery(search.slice(1)));
     }
+    return () => {
+      dispatch(resetCatalogState());
+    };
   },
   [dispatch, search]);
 
@@ -31,7 +35,10 @@ function ProductList(): JSX.Element {
   }
 
   return (
-    <div className="cards catalog__cards">
+    <div
+      data-testid="product-list"
+      className="cards catalog__cards"
+    >
       {guitarCards.map((card) => <ProductCard key={card.id} card={card}/>)}
     </div>
   );

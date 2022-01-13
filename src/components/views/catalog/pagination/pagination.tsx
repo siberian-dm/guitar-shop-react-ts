@@ -59,7 +59,10 @@ function Pagination(): JSX.Element {
   [pageNumber, setQueryParams]);
 
   return (
-    <div className="pagination page-content__pagination">
+    <div
+      data-testid="pagination"
+      className="pagination page-content__pagination"
+    >
       <ul className="pagination__list">
         {isShowPrevBtn && (
           <li className="pagination__page pagination__page--prev" id="prev">

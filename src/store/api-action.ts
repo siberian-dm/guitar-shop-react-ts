@@ -1,12 +1,13 @@
 import { APIRoute } from '../services/api';
 import { FetchState } from '../types/store';
 import {
-  loadCardTotalCount,
-  loadGuitarsCards,
-  loadPriceMaxLimit,
-  loadPriceMinLimit,
+  setCardTotalCount,
+  setGuitarsCards,
+  setPriceMaxLimit,
+  setPriceMinLimit,
   setFetchState
 } from './reducers/catalog-slice/catalog-slice';
+import { setSearchedGuitars } from './reducers/search-form-slice/search-form-slice';
 import { parse, stringify } from 'query-string';
 import { parseIntNumberFromString } from '../utils/common';
 import { QueryField } from '../const';
@@ -42,10 +43,10 @@ export const fetchGuitarsByQuery = (queryString: string): ThunkActionResult =>
 
       const cardTotalCount = parseIntNumberFromString(headers['x-total-count']);
 
-      dispatch(loadCardTotalCount(cardTotalCount));
-      dispatch(loadPriceMinLimit(guitarWithMinPrice[0].price));
-      dispatch(loadPriceMaxLimit(guitarWithMaxPrice[0].price));
-      dispatch(loadGuitarsCards(guitarsByQuery));
+      dispatch(setCardTotalCount(cardTotalCount));
+      dispatch(setPriceMinLimit(guitarWithMinPrice[0].price));
+      dispatch(setPriceMaxLimit(guitarWithMaxPrice[0].price));
+      dispatch(setGuitarsCards(guitarsByQuery));
     }
     catch (error) {
       const errorMessage = (error as {message: string}).message;
@@ -56,5 +57,21 @@ export const fetchGuitarsByQuery = (queryString: string): ThunkActionResult =>
     }
     finally {
       dispatch(setFetchState(FetchState.Idle));
+    }
+  };
+
+export const fetchGuitarsByName = (name: string): ThunkActionResult =>
+  async (dispatch, _getState, api): Promise<void> => {
+    try {
+      const { data } = await api.get(`${APIRoute.GuitarsSearch}${name}`);
+
+      dispatch(setSearchedGuitars(data));
+    }
+    catch (error) {
+      const errorMessage = (error as {message: string}).message;
+
+      if (errorMessage) {
+        toast.error(errorMessage);
+      }
     }
   };

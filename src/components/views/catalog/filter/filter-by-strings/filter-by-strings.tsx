@@ -80,7 +80,10 @@ function FilterByStrings(): JSX.Element {
   };
 
   return (
-    <fieldset className="catalog-filter__block">
+    <fieldset
+      data-testid="filter-by-strings"
+      className="catalog-filter__block"
+    >
       <legend className="catalog-filter__block-title">Количество струн</legend>
       <div className="form-checkbox catalog-filter__block-item">
         <input

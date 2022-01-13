@@ -1,66 +1,41 @@
 import classNames from 'classnames';
-import debounce from 'lodash.debounce';
 import styles from './search-form.module.css';
-import { APIRoute, createAPI } from '../../../../services/api';
+import useDebounce from '../../../../hooks/use-debounce';
 import { AppRoute } from '../../../../const';
 import {
   ChangeEvent,
   FormEvent,
   useEffect,
-  useRef,
   useState
 } from 'react';
-import { TGuitarCards } from '../../../../types/app-data';
-import { toast } from 'react-toastify';
+import { fetchGuitarsByName } from '../../../../store/api-action';
+import { getSearchedGuitars } from '../../../../store/reducers/search-form-slice/selectors';
+import { resetSearchFormState } from '../../../../store/reducers/search-form-slice/search-form-slice';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-const TIMEOUT_DELAY = 500;
-
-const api = createAPI();
-
 function SearchForm(): JSX.Element {
-  const history = useHistory();
-  const [guitars, setGuitars] = useState<TGuitarCards | []>([]);
   const [searchCriteria, setSearchCriteria] = useState('');
+  const debouncedCriteria = useDebounce(searchCriteria);
 
-  const searchGuitars = async (criteria: string) => {
-    try {
-      const response = await api.get<TGuitarCards>(`${APIRoute.GuitarsSearch}${criteria}`);
+  const searchedGuitars = useSelector(getSearchedGuitars);
 
-      return response.data;
-    }
-    catch (error) {
-      const errorMessage = (error as {message: string}).message;
+  const history = useHistory();
 
-      if (errorMessage) {
-        toast.error(errorMessage);
-      }
-    }
-  };
-
-  const debouncedSearch = useRef(
-    debounce(
-      async (criteria: string) => {
-        const data = await searchGuitars(criteria);
-        setGuitars(data ?? []);
-      },
-      TIMEOUT_DELAY),
-  ).current;
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (searchCriteria.length !== 0) {
-      debouncedSearch(searchCriteria);
+    if (debouncedCriteria.length !== 0) {
+      dispatch(fetchGuitarsByName(debouncedCriteria));
     }
     else {
-      setGuitars([]);
+      dispatch(resetSearchFormState());
     }
-
     return () => {
-      setGuitars([]);
-      debouncedSearch.cancel();
+      dispatch(resetSearchFormState());
     };
-  }, [debouncedSearch, searchCriteria]);
-
+  },
+  [debouncedCriteria, dispatch]);
 
   const onSearchInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setSearchCriteria(evt.target.value);
@@ -77,8 +52,8 @@ function SearchForm(): JSX.Element {
   const selectListClass = classNames(
     'form-search__select-list',
     {
-      'hidden': guitars.length === 0,
-      [`${styles['list-opened']} list-opened`]: guitars.length !== 0,
+      'hidden': searchedGuitars.length === 0,
+      [`${styles['list-opened']} list-opened`]: searchedGuitars.length !== 0,
     });
 
   return (
@@ -97,11 +72,12 @@ function SearchForm(): JSX.Element {
           autoComplete="off"
           placeholder="что вы ищите?"
           onChange={onSearchInputChange}
+          value={searchCriteria}
         />
         <label className="visually-hidden" htmlFor="search">Поиск</label>
       </form>
       <ul className={selectListClass}>
-        {guitars.length !== 0 && guitars
+        {searchedGuitars.length !== 0 && searchedGuitars
           .map(({ name, id }) => (
             <li
               key={id}

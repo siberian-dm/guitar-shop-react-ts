@@ -19,7 +19,11 @@ export type TGuitarCard = {
   stringCount: number;
   rating: number;
   price: number;
-  comments: TComment[];
+  comments: TComments;
 }
 
+export type TSearchedGuitar = Pick<TGuitarCard, 'id' | 'name'>;
+
 export type TGuitarCards = TGuitarCard[];
+export type TComments = TComment[];
+export type TSearchedGuitars = TSearchedGuitar[];

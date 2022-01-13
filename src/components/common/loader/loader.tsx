@@ -12,6 +12,7 @@ function Loader(): JSX.Element {
         width="100px" height="100px"
         viewBox="0 0 100 100"
         preserveAspectRatio="xMidYMid"
+        data-testid="svg-spinner"
       >
         <circle
           cx="50"

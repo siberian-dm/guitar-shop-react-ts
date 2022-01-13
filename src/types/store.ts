@@ -1,8 +1,9 @@
 import { rootReducer } from '../store/reducers/root-reducer';
-import { TGuitarCards } from './app-data';
+import { TGuitarCards, TSearchedGuitars } from './app-data';
 
 export enum ReducerName {
   Catalog = 'catalog',
+  SearchForm = 'searchForm',
 }
 
 export enum FetchState {
@@ -17,6 +18,10 @@ export type TCatalogDataState = {
   priceMaxLimit: number;
   currentPageNumber: number;
   cardTotalCount: number;
+}
+
+export type TSearchFormDataState = {
+  searchedGuitars: [] | TSearchedGuitars;
 }
 
 export type TRootState = ReturnType<typeof rootReducer>;

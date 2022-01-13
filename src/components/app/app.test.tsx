@@ -2,7 +2,8 @@ import App from './app';
 import { AppRoute } from '../../const';
 import { configureMockStore } from '@jedmao/redux-mock-store';
 import { createMemoryHistory } from 'history';
-import { initialState } from '../../store/reducers/catalog-slice/catalog-slice';
+import { initialState as catalogInitialState } from '../../store/reducers/catalog-slice/catalog-slice';
+import { initialState as searchFormInitialState } from '../../store/reducers/search-form-slice/search-form-slice';
 import { Provider } from 'react-redux';
 import { ReducerName } from '../../types/store';
 import { render, screen } from '@testing-library/react';
@@ -11,12 +12,14 @@ import { Router } from 'react-router-dom';
 const mockStore = configureMockStore();
 
 const store = mockStore({
-  [ReducerName.Catalog]: {...initialState},
+  [ReducerName.Catalog]: {...catalogInitialState},
+  [ReducerName.SearchForm]: {...searchFormInitialState},
 });
 
 store.dispatch = jest.fn();
 
 const history = createMemoryHistory();
+
 const fakeApp = (
   <Provider store={store}>
     <Router history={history}>

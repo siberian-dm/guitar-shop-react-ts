@@ -13,7 +13,10 @@ function MainLayout({ children }: TProps): JSX.Element {
       <div className="visually-hidden">
         <SvgBasket />
       </div>
-      <div className="wrapper">
+      <div
+        data-testid="main-layout"
+        className="wrapper"
+      >
         <Header />
         {children}
         <Footer />

@@ -75,7 +75,10 @@ function FilterByPrice(): JSX.Element {
   };
 
   return (
-    <fieldset className="catalog-filter__block">
+    <fieldset
+      data-testid="filter-by-price"
+      className="catalog-filter__block"
+    >
       <legend className="catalog-filter__block-title">Цена, ₽</legend>
       <div className="catalog-filter__price-range">
         <div className="form-input">

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 function Header(): JSX.Element {
   return (
-    <header className="header" id="header">
+    <header className="header" id="header" data-testid="header">
       <div className="container header__wrapper">
         <Logo type={LogoType.Header}/>
         <nav className="main-nav">

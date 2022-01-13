@@ -2,7 +2,7 @@ import Logo, { LogoType } from '../logo/logo';
 
 function Footer(): JSX.Element {
   return (
-    <footer className="footer">
+    <footer className="footer" data-testid="footer">
       <div className="footer__container container">
         <Logo type={LogoType.Footer}/>
         <div className="socials footer__socials">

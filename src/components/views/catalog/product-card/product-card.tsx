@@ -27,10 +27,16 @@ function ProductCard({ card }: TProps): JSX.Element {
           rateType={RateType.ProductCard}
           rateCount={comments.length}
         />
-        <p className="product-card__title">
+        <p
+          data-testid="product-name"
+          className="product-card__title"
+        >
           {name}
         </p>
-        <p className="product-card__price">
+        <p
+          data-testid="product-price"
+          className="product-card__price"
+        >
           <span className="visually-hidden">Цена:</span>{formatPrice(price)}
         </p>
       </div>
