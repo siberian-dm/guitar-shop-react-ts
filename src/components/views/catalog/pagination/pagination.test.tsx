@@ -1,9 +1,6 @@
-import MockAdapter from 'axios-mock-adapter';
 import Pagination from './pagination';
-import thunk from 'redux-thunk';
 import { AppRoute, CATALOG_PAGE_SIZE } from '../../../../const';
 import { configureMockStore } from '@jedmao/redux-mock-store';
-import { createAPI } from '../../../../services/api';
 import { createMemoryHistory } from 'history';
 import { getMockGuitarCardsWithComments } from '../../../../mocks/app-mock-data';
 import { initialState } from '../../../../store/reducers/catalog-slice/catalog-slice';
@@ -15,11 +12,7 @@ import { Route, Router } from 'react-router-dom';
 
 const PRODUCT_CARD_COUNT = 42;
 
-const api = createAPI();
-const mockAPI = new MockAdapter(api);
-const middlewares = [thunk.withExtraArgument(mockAPI)];
-
-const mockStore = configureMockStore(middlewares);
+const mockStore = configureMockStore();
 
 const history = createMemoryHistory();
 
