@@ -70,7 +70,10 @@ function FilterByType(): JSX.Element {
   };
 
   return (
-    <fieldset className="catalog-filter__block">
+    <fieldset
+      data-testid="filter-by-type"
+      className="catalog-filter__block"
+    >
       <legend className="catalog-filter__block-title">Тип гитар</legend>
       <div className="form-checkbox catalog-filter__block-item">
         <input
