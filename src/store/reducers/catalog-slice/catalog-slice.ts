@@ -14,16 +14,16 @@ const catalogSlice = createSlice({
   name: ReducerName.Catalog,
   initialState,
   reducers: {
-    loadGuitarsCards: (state, action) => {
+    setGuitarsCards: (state, action) => {
       state.guitarsCards = action.payload;
     },
-    loadPriceMinLimit: (state, action) => {
+    setPriceMinLimit: (state, action) => {
       state.priceMinLimit = action.payload;
     },
-    loadPriceMaxLimit: (state, action) => {
+    setPriceMaxLimit: (state, action) => {
       state.priceMaxLimit = action.payload;
     },
-    loadCardTotalCount: (state, action) => {
+    setCardTotalCount: (state, action) => {
       state.cardTotalCount = action.payload;
     },
     setFetchState: (state, action) => {
@@ -32,18 +32,27 @@ const catalogSlice = createSlice({
     setCurrentPage: (state, action) => {
       state.currentPageNumber = action.payload;
     },
+    resetCatalogState: (state) => {
+      state.guitarsCards = [];
+      state.priceMinLimit = 0;
+      state.priceMaxLimit = 0;
+      state.cardTotalCount = 0;
+      state.currentPageNumber = 1;
+      state.fetchState = FetchState.Idle;
+    },
   },
 });
 
 const { actions } = catalogSlice;
 
 export const {
-  loadGuitarsCards,
-  loadPriceMinLimit,
-  loadPriceMaxLimit,
+  setGuitarsCards,
+  setPriceMinLimit,
+  setPriceMaxLimit,
   setFetchState,
   setCurrentPage,
-  loadCardTotalCount,
+  setCardTotalCount,
+  resetCatalogState,
 } = actions;
 
 export default catalogSlice;
