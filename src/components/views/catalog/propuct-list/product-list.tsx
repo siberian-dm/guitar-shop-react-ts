@@ -35,7 +35,10 @@ function ProductList(): JSX.Element {
   }
 
   return (
-    <div className="cards catalog__cards" data-testid="product-list">
+    <div
+      data-testid="product-list"
+      className="cards catalog__cards"
+    >
       {guitarCards.map((card) => <ProductCard key={card.id} card={card}/>)}
     </div>
   );
