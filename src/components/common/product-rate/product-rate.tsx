@@ -35,7 +35,11 @@ function ProductRate({ rating, rateType, rateCount }: TProps): JSX.Element {
     });
 
   return (
-    <div className={rateClass} aria-hidden="true">
+    <div
+      data-testid="product-rate"
+      className={rateClass}
+      aria-hidden="true"
+    >
       <span className="visually-hidden">Рейтинг:</span>
       {RATES.map((value) => (
         <svg
