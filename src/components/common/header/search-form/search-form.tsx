@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { fetchGuitarsByName } from '../../../../store/api-action';
 import { getSearchedGuitars } from '../../../../store/reducers/search-form-slice/selectors';
-import { setSearchedGuitars } from '../../../../store/reducers/search-form-slice/search-form-slice';
+import { resetSearchFormState } from '../../../../store/reducers/search-form-slice/search-form-slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -29,10 +29,10 @@ function SearchForm(): JSX.Element {
       dispatch(fetchGuitarsByName(debouncedCriteria));
     }
     else {
-      dispatch(setSearchedGuitars([]));
+      dispatch(resetSearchFormState());
     }
     return () => {
-      dispatch(setSearchedGuitars([]));
+      dispatch(resetSearchFormState());
     };
   },
   [debouncedCriteria, dispatch]);

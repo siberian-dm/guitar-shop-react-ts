@@ -12,11 +12,14 @@ const searchFormSlice = createSlice({
     setSearchedGuitars: (state, action) => {
       state.searchedGuitars = action.payload;
     },
+    resetSearchFormState: (state) => {
+      state.searchedGuitars = [];
+    },
   },
 });
 
 const { actions } = searchFormSlice;
 
-export const { setSearchedGuitars } = actions;
+export const { setSearchedGuitars, resetSearchFormState } = actions;
 
 export default searchFormSlice;
