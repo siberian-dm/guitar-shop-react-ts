@@ -1,16 +1,16 @@
 import { APIRoute } from '../services/api';
 import { FetchState } from '../types/store';
-import {
-  setCardTotalCount,
-  setGuitarsCards,
-  setPriceMaxLimit,
-  setPriceMinLimit,
-  setFetchState
-} from './reducers/catalog-slice/catalog-slice';
-import { setSearchedGuitars } from './reducers/search-form-slice/search-form-slice';
 import { parse, stringify } from 'query-string';
 import { parseIntNumberFromString } from '../utils/common';
 import { QueryField } from '../const';
+import {
+  setCardTotalCount,
+  setFetchState,
+  setGuitarsCards,
+  setPriceMaxLimit,
+  setPriceMinLimit
+} from './reducers/catalog-slice/catalog-slice';
+import { setSearchedGuitars } from './reducers/search-form-slice/search-form-slice';
 import { ThunkActionResult } from '../types/action';
 import { toast } from 'react-toastify';
 
@@ -43,9 +43,12 @@ export const fetchGuitarsByQuery = (queryString: string): ThunkActionResult =>
 
       const cardTotalCount = parseIntNumberFromString(headers['x-total-count']);
 
+      const minPrice = guitarWithMinPrice[0]?.price ?? 0;
+      const maxPrice = guitarWithMaxPrice[0]?.price ?? 0;
+
       dispatch(setCardTotalCount(cardTotalCount));
-      dispatch(setPriceMinLimit(guitarWithMinPrice[0].price));
-      dispatch(setPriceMaxLimit(guitarWithMaxPrice[0].price));
+      dispatch(setPriceMinLimit(minPrice));
+      dispatch(setPriceMaxLimit(maxPrice));
       dispatch(setGuitarsCards(guitarsByQuery));
     }
     catch (error) {
