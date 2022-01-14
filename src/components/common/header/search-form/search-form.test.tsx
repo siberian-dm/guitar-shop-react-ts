@@ -5,11 +5,12 @@ import userEvent from '@testing-library/user-event';
 import { configureMockStore, MockStore } from '@jedmao/redux-mock-store';
 import { createAPI } from '../../../../services/api';
 import { createMemoryHistory } from 'history';
-import { DEBOUNCE_DELAY } from '../../../../hooks/use-debounce';
+// import { DEBOUNCE_DELAY } from '../../../../hooks/use-debounce';
 import { Provider } from 'react-redux';
 import { ReducerName } from '../../../../types/store';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { Router } from 'react-router-dom';
+import { DEBOUNCE_DELAY } from '../../../../const';
 
 const api = createAPI();
 const mockAPI = new MockAdapter(api);
@@ -76,8 +77,11 @@ describe('Component: SearchForm', () => {
 
     const searchInput = screen.getByPlaceholderText('что вы ищите?');
 
-    userEvent.type(searchInput, 'tes');
-    await userEvent.type(searchInput, 't', {delay: DEBOUNCE_DELAY});
+    userEvent.type(searchInput, 'test');
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_DELAY));
+    });
 
     expect(store.dispatch).toHaveBeenLastCalledWith(expect.any(Function));
   });
