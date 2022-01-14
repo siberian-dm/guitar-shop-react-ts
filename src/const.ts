@@ -2,6 +2,8 @@ export const DEBOUNCE_DELAY = 600;
 
 export const CATALOG_PAGE_SIZE = 6;
 
+export const PAGE_SLICE_LENGTH = 3;
+
 export enum AppRoute {
   Root = '/',
   Catalog = '/catalog/page_:page',
