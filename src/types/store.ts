@@ -16,7 +16,6 @@ export type TCatalogDataState = {
   fetchState: FetchState;
   priceMinLimit: number;
   priceMaxLimit: number;
-  currentPageNumber: number;
   cardTotalCount: number;
 }
 

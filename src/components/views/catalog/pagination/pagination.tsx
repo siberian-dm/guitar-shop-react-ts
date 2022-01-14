@@ -1,14 +1,21 @@
 import PageLink from './page-link/page-link';
-import { AppRoute, CATALOG_PAGE_SIZE, QueryField } from '../../../../const';
+import {
+  AppRoute,
+  CATALOG_PAGE_SIZE,
+  PAGE_SLICE_LENGTH,
+  QueryField
+} from '../../../../const';
 import { getPageNumbers } from '../../../../store/reducers/catalog-slice/selectors';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import {
+  Link,
+  useHistory,
+  useLocation,
+  useParams
+} from 'react-router-dom';
 import { NumberParam, useQueryParams } from 'use-query-params';
 import { parsePageNumberFromString } from '../../../../utils/common';
-import { setCurrentPage } from '../../../../store/reducers/catalog-slice/catalog-slice';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-
-const SLICE_LENGTH = 3;
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 type TParams = {
   page?: string;
@@ -19,44 +26,46 @@ function Pagination(): JSX.Element {
     [QueryField.Start]: NumberParam,
     [QueryField.End]: NumberParam,
   });
-
-  const [pageSlice, setPageSlice] = useState<number[] | []>([]);
-
-  const { search } = useLocation();
-
-  const { page }: TParams = useParams();
-  const pageNumber = parsePageNumberFromString(page);
-
   const pageNumbers = useSelector(getPageNumbers);
 
-  const isShowPrevBtn = pageSlice[0] > pageNumbers[0];
-  const isShowNextBtn = pageSlice[pageSlice.length - 1] < pageNumbers[pageNumbers.length -1];
+  const { page }: TParams = useParams();
+  const pageNumberParam = parsePageNumberFromString(page);
 
-  const dispatch = useDispatch();
+  const isPageNumberParamValid = pageNumberParam <= pageNumbers.length;
+
+  const validPageNumber = isPageNumberParamValid
+    ? pageNumberParam
+    : pageNumbers[pageNumbers.length - 1] ?? 1;
+
+  const firstIndexSlice = (Math.ceil(validPageNumber / PAGE_SLICE_LENGTH) - 1) * PAGE_SLICE_LENGTH;
+  const secondIndexSlice = firstIndexSlice + PAGE_SLICE_LENGTH;
+
+  const pageSlice = pageNumbers.slice(firstIndexSlice, secondIndexSlice);
+
+
+  const { search } = useLocation();
+  const history = useHistory();
 
   useEffect(() => {
-    dispatch(setCurrentPage(pageNumber));
+    if (!isPageNumberParamValid) {
+      history.push(`${AppRoute.CatalogPage}${validPageNumber}${search}`);
+    }
   },
-  [dispatch, pageNumber]);
+  [history, isPageNumberParamValid, search, validPageNumber]);
 
   useEffect(() => {
-    const firstIndexSlice = (Math.ceil(pageNumber / SLICE_LENGTH) - 1) * SLICE_LENGTH;
-    const secondIndexSlice = firstIndexSlice + SLICE_LENGTH;
-
-    setPageSlice(pageNumbers.slice(firstIndexSlice, secondIndexSlice));
-  },
-  [pageNumber, pageNumbers]);
-
-  useEffect(() => {
-    const startPage = CATALOG_PAGE_SIZE * pageNumber - CATALOG_PAGE_SIZE;
-    const endPage = CATALOG_PAGE_SIZE * pageNumber;
+    const startPage = CATALOG_PAGE_SIZE * validPageNumber - CATALOG_PAGE_SIZE;
+    const endPage = CATALOG_PAGE_SIZE * validPageNumber;
 
     setQueryParams({
       [QueryField.Start]: startPage,
       [QueryField.End]: endPage,
     });
   },
-  [pageNumber, setQueryParams]);
+  [setQueryParams, validPageNumber]);
+
+  const isShowPrevBtn = pageSlice[0] > pageNumbers[0];
+  const isShowNextBtn = pageSlice[pageSlice.length - 1] < pageNumbers[pageNumbers.length -1];
 
   return (
     <div
@@ -78,7 +87,7 @@ function Pagination(): JSX.Element {
           <PageLink
             key={value}
             pageNumber={value}
-            isActive={value === pageNumber}
+            isActive={value === pageNumberParam}
           />
         ))}
         {isShowNextBtn && (

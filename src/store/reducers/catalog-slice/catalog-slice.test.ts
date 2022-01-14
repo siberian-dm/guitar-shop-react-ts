@@ -1,8 +1,6 @@
 import catalogSlice, {
   initialState,
-  resetCatalogState,
   setCardTotalCount,
-  setCurrentPage,
   setFetchState,
   setGuitarsCards,
   setPriceMaxLimit,
@@ -56,24 +54,11 @@ describe('Reducer: catalogSlice', () => {
       });
   });
 
-  it('should update currentPageNumber by setCurrentPage', () => {
-    expect(reducer(mockState, setCurrentPage(5)))
-      .toEqual({
-        ...mockState,
-        currentPageNumber: 5,
-      });
-  });
-
   it('should update cardTotalCount by setCardTotalCount', () => {
     expect(reducer(mockState, setCardTotalCount(27)))
       .toEqual({
         ...mockState,
         cardTotalCount: 27,
       });
-  });
-
-  it('should reset state by resetCatalogState', () => {
-    expect(reducer(mockState, resetCatalogState()))
-      .toEqual(initialState);
   });
 });
