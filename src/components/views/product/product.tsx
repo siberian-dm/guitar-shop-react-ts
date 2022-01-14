@@ -1,24 +1,57 @@
+import axios, { AxiosError } from 'axios';
 import Breadcrumbs from '../../common/breadcrumbs/breadcrumbs';
+import Loader from '../../common/loader/loader';
 import MainLayout from '../../common/main-layout/main-layout';
 import ProductDetail from './product-detail/product-detail';
 import Reviews from './reviews/reviews';
-import useFetch from '../../../hooks/use-fetch';
-import { APIRoute } from '../../../services/api';
+import { APIRoute, createAPI } from '../../../services/api';
 import { AppRoute } from '../../../const';
 import { Redirect, useParams } from 'react-router-dom';
 import { TGuitarCard } from '../../../types/app-data';
-import Loader from '../../common/loader/loader';
+import { useEffect, useState } from 'react';
 
 const NOT_FOUND_STATUS_CODE = 404;
+
+const api = createAPI();
 
 type TParams = {
   id?: string;
 }
 
 function Product(): JSX.Element {
+  const [data, setData] = useState<TGuitarCard | null>(null);
+  const [error, setError] = useState<AxiosError | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const { id } = useParams<TParams>();
 
-  const { data, error, isLoading } = useFetch<TGuitarCard>(`${APIRoute.Guitars}/${id}`);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+
+        const response = await api.get(`${APIRoute.Guitars}/${id}`);
+        setData(response.data);
+      }
+      catch (err) {
+        if (axios.isAxiosError(err)) {
+          setError(err);
+        }
+      }
+      finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      setData(null);
+      setError(null);
+      setIsLoading(false);
+    };
+  }, [id]);
+
 
   if (error !== null && error.response?.status === NOT_FOUND_STATUS_CODE) {
     return <Redirect to={AppRoute.NotFound}/>;

@@ -2,13 +2,14 @@ import MockAdapter from 'axios-mock-adapter';
 import SearchForm from './search-form';
 import thunk from 'redux-thunk';
 import userEvent from '@testing-library/user-event';
+import { act, render, screen } from '@testing-library/react';
 import { configureMockStore, MockStore } from '@jedmao/redux-mock-store';
 import { createAPI } from '../../../../services/api';
 import { createMemoryHistory } from 'history';
-import { DEBOUNCE_DELAY } from '../../../../hooks/use-debounce';
+import { DEBOUNCE_DELAY } from '../../../../const';
+import { mockSearchedGuitars } from '../../../../mocks/app-mock-data';
 import { Provider } from 'react-redux';
 import { ReducerName } from '../../../../types/store';
-import { render, screen } from '@testing-library/react';
 import { Router } from 'react-router-dom';
 
 const api = createAPI();
@@ -30,22 +31,18 @@ const fakeSearchForm = (store: MockStore) => (
 describe('Component: SearchForm', () => {
   it('should render correctly', () => {
     const store = mockStore({
-      [ReducerName.SearchForm]: {searchedGuitars: [
-        {id: 0, name: 'test1'},
-        {id: 1, name: 'test2'},
-        {id: 2, name: 'test3'},
-        {id: 3, name: 'test4'},
-      ]},
+      [ReducerName.SearchForm]: {searchedGuitars: mockSearchedGuitars},
     });
 
     render(fakeSearchForm(store));
 
     expect(screen.getByRole('button')).toBeInTheDocument();
     expect(screen.getByRole('list')).toHaveClass('list-opened');
-    expect(screen.getByText('test1')).toBeInTheDocument();
-    expect(screen.getByText('test2')).toBeInTheDocument();
-    expect(screen.getByText('test3')).toBeInTheDocument();
-    expect(screen.getByText('test4')).toBeInTheDocument();
+
+    for (const mockGuitar of mockSearchedGuitars) {
+      expect(screen.getByText(mockGuitar.name)).toBeInTheDocument();
+    }
+
     expect(screen.getByText('Начать поиск')).toBeInTheDocument();
 
     const searchInput = screen.getByPlaceholderText('что вы ищите?');
@@ -76,8 +73,11 @@ describe('Component: SearchForm', () => {
 
     const searchInput = screen.getByPlaceholderText('что вы ищите?');
 
-    userEvent.type(searchInput, 'tes');
-    await userEvent.type(searchInput, 't', {delay: DEBOUNCE_DELAY});
+    userEvent.type(searchInput, 'test');
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_DELAY));
+    });
 
     expect(store.dispatch).toHaveBeenLastCalledWith(expect.any(Function));
   });

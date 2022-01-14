@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import styles from './search-form.module.css';
-import useDebounce from '../../../../hooks/use-debounce';
-import { AppRoute } from '../../../../const';
+import { AppRoute, DEBOUNCE_DELAY } from '../../../../const';
 import {
   ChangeEvent,
   FormEvent,
@@ -15,8 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 function SearchForm(): JSX.Element {
-  const [searchCriteria, setSearchCriteria] = useState('');
-  const debouncedCriteria = useDebounce(searchCriteria);
+  const [value, setValue] = useState('');
+  const [debouncedValue, setDebouncedValue] = useState('');
 
   const searchedGuitars = useSelector(getSearchedGuitars);
 
@@ -25,8 +24,16 @@ function SearchForm(): JSX.Element {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (debouncedCriteria.length !== 0) {
-      dispatch(fetchGuitarsByName(debouncedCriteria));
+    const timer = setTimeout(() => setDebouncedValue(value), DEBOUNCE_DELAY);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value]);
+
+  useEffect(() => {
+    if (debouncedValue.length !== 0) {
+      dispatch(fetchGuitarsByName(debouncedValue));
     }
     else {
       dispatch(resetSearchFormState());
@@ -35,10 +42,10 @@ function SearchForm(): JSX.Element {
       dispatch(resetSearchFormState());
     };
   },
-  [debouncedCriteria, dispatch]);
+  [debouncedValue, dispatch]);
 
   const onSearchInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    setSearchCriteria(evt.target.value);
+    setValue(evt.target.value);
   };
 
   const onSelectItemClick = (id: number) => () => {
@@ -72,7 +79,7 @@ function SearchForm(): JSX.Element {
           autoComplete="off"
           placeholder="что вы ищите?"
           onChange={onSearchInputChange}
-          value={searchCriteria}
+          value={value}
         />
         <label className="visually-hidden" htmlFor="search">Поиск</label>
       </form>

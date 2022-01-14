@@ -1,3 +1,5 @@
+export const DEBOUNCE_DELAY = 600;
+
 export const CATALOG_PAGE_SIZE = 6;
 
 export enum AppRoute {

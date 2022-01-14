@@ -1,6 +1,13 @@
 import faker from 'faker';
 import { TComments, TGuitarCards } from '../types/app-data';
 
+export const mockSearchedGuitars = [
+  {id: 1, name: 'guitar1'},
+  {id: 2, name: 'guitar2'},
+  {id: 3, name: 'guitar3'},
+  {id: 4, name: 'guitar4'},
+];
+
 const getMockComment = (guitarId: number) => ({
   id: faker.datatype.uuid(),
   userName: faker.name.firstName(),
