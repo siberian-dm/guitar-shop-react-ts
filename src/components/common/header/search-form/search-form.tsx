@@ -12,6 +12,7 @@ import { getSearchedGuitars } from '../../../../store/reducers/search-form-slice
 import { resetSearchFormState } from '../../../../store/reducers/search-form-slice/search-form-slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { normalizeSearchResult } from '../../../../utils/normalize-search-result';
 
 function SearchForm(): JSX.Element {
   const [value, setValue] = useState('');
@@ -19,12 +20,14 @@ function SearchForm(): JSX.Element {
 
   const searchedGuitars = useSelector(getSearchedGuitars);
 
+  const filteredAndSortedGuitars = normalizeSearchResult(searchedGuitars, debouncedValue);
+
   const history = useHistory();
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), DEBOUNCE_DELAY);
+    const timer = setTimeout(() => setDebouncedValue(value.trim()), DEBOUNCE_DELAY);
 
     return () => {
       clearTimeout(timer);
@@ -59,8 +62,8 @@ function SearchForm(): JSX.Element {
   const selectListClass = classNames(
     'form-search__select-list',
     {
-      'hidden': searchedGuitars.length === 0,
-      [`${styles['list-opened']} list-opened`]: searchedGuitars.length !== 0,
+      'hidden': filteredAndSortedGuitars.length === 0,
+      [`${styles['list-opened']} list-opened`]: filteredAndSortedGuitars.length !== 0,
     });
 
   return (
@@ -84,7 +87,7 @@ function SearchForm(): JSX.Element {
         <label className="visually-hidden" htmlFor="search">Поиск</label>
       </form>
       <ul className={selectListClass}>
-        {searchedGuitars.length !== 0 && searchedGuitars
+        {filteredAndSortedGuitars.length !== 0 && filteredAndSortedGuitars
           .map(({ name, id }) => (
             <li
               key={id}
