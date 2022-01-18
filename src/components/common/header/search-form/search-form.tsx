@@ -9,14 +9,15 @@ import {
 } from 'react';
 import { fetchGuitarsByName } from '../../../../store/api-action';
 import { getSearchedGuitars } from '../../../../store/reducers/search-form-slice/selectors';
+import { normalizeSearchResult } from '../../../../utils/normalize-search-result';
 import { resetSearchFormState } from '../../../../store/reducers/search-form-slice/search-form-slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { normalizeSearchResult } from '../../../../utils/normalize-search-result';
 
 function SearchForm(): JSX.Element {
   const [value, setValue] = useState('');
   const [debouncedValue, setDebouncedValue] = useState('');
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const searchedGuitars = useSelector(getSearchedGuitars);
 
@@ -51,6 +52,14 @@ function SearchForm(): JSX.Element {
     setValue(evt.target.value);
   };
 
+  const onSearchInputFocus = () => {
+    setIsInputFocused(true);
+  };
+
+  const onSearchInputBlur = () => {
+    setIsInputFocused(false);
+  };
+
   const onSelectItemClick = (id: number) => () => {
     history.push(`${AppRoute.Product}/${id}`);
   };
@@ -62,8 +71,8 @@ function SearchForm(): JSX.Element {
   const selectListClass = classNames(
     'form-search__select-list',
     {
-      'hidden': filteredAndSortedGuitars.length === 0,
-      [`${styles['list-opened']} list-opened`]: filteredAndSortedGuitars.length !== 0,
+      'hidden': filteredAndSortedGuitars.length === 0 || !isInputFocused,
+      [`${styles['list-opened']} list-opened`]: filteredAndSortedGuitars.length !== 0 && isInputFocused,
     });
 
   return (
@@ -82,6 +91,8 @@ function SearchForm(): JSX.Element {
           autoComplete="off"
           placeholder="что вы ищите?"
           onChange={onSearchInputChange}
+          onFocus={onSearchInputFocus}
+          onBlur={onSearchInputBlur}
           value={value}
         />
         <label className="visually-hidden" htmlFor="search">Поиск</label>
