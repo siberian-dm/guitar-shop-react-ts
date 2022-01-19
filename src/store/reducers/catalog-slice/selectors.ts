@@ -4,6 +4,8 @@ import { ReducerName, TRootState } from '../../../types/store';
 
 export const getGuitarsCards = (state: TRootState) => state[ReducerName.Catalog].guitarsCards;
 
+export const getIsDataLoaded = (state: TRootState) => state[ReducerName.Catalog].isDataLoaded;
+
 export const getPriceMinLimit = (state: TRootState) => state[ReducerName.Catalog].priceMinLimit;
 
 export const getPriceMaxLimit = (state: TRootState) => state[ReducerName.Catalog].priceMaxLimit;

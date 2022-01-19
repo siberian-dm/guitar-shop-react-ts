@@ -13,6 +13,7 @@ export enum FetchState {
 
 export type TCatalogDataState = {
   guitarsCards: [] | TGuitarCards;
+  isDataLoaded: boolean;
   fetchState: FetchState;
   priceMinLimit: number;
   priceMaxLimit: number;
