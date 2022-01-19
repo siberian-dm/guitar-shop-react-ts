@@ -14,7 +14,7 @@ import {
   setPriceMaxLimit,
   setPriceMinLimit
 } from './reducers/catalog-slice/catalog-slice';
-import { setSearchedGuitars } from './reducers/search-form-slice/search-form-slice';
+import { setSearchedGuitars } from './reducers/search-slice/search-slice';
 
 describe('Async actions', () => {
   const api = createAPI();

@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import SearchForm from './search-form';
+import Search from './search';
 import thunk from 'redux-thunk';
 import userEvent from '@testing-library/user-event';
 import { act, render, screen } from '@testing-library/react';
@@ -23,7 +23,7 @@ const history = createMemoryHistory();
 const fakeSearchForm = (store: MockStore) => (
   <Provider store={store}>
     <Router history={history}>
-      <SearchForm />
+      <Search />
     </Router>
   </Provider>
 );
@@ -31,7 +31,7 @@ const fakeSearchForm = (store: MockStore) => (
 describe('Component: SearchForm', () => {
   it('should render correctly', () => {
     const store = mockStore({
-      [ReducerName.SearchForm]: {searchedGuitars: mockSearchedGuitars},
+      [ReducerName.Search]: {searchedGuitars: mockSearchedGuitars},
     });
 
     render(fakeSearchForm(store));
@@ -54,7 +54,7 @@ describe('Component: SearchForm', () => {
 
   it('should render without select list', () => {
     const store = mockStore({
-      [ReducerName.SearchForm]: {searchedGuitars: []},
+      [ReducerName.Search]: {searchedGuitars: []},
     });
 
     render(fakeSearchForm(store));
@@ -64,7 +64,7 @@ describe('Component: SearchForm', () => {
 
   it('should call dispatch with function after user input', async () => {
     const store = mockStore({
-      [ReducerName.SearchForm]: {searchedGuitars: []},
+      [ReducerName.Search]: {searchedGuitars: []},
     });
 
     store.dispatch = jest.fn();

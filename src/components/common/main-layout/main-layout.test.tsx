@@ -1,7 +1,7 @@
 import MainLayout from './main-layout';
 import { configureMockStore } from '@jedmao/redux-mock-store';
 import { createMemoryHistory } from 'history';
-import { initialState as searchFormInitialState } from '../../../store/reducers/search-form-slice/search-form-slice';
+import { initialState as searchFormInitialState } from '../../../store/reducers/search-slice/search-slice';
 import { Provider } from 'react-redux';
 import { ReducerName } from '../../../types/store';
 import { render, screen } from '@testing-library/react';
@@ -10,7 +10,7 @@ import { Router } from 'react-router-dom';
 const mockStore = configureMockStore();
 
 const store = mockStore({
-  [ReducerName.SearchForm]: {...searchFormInitialState},
+  [ReducerName.Search]: {...searchFormInitialState},
 });
 const history = createMemoryHistory();
 
