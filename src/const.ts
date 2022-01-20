@@ -47,3 +47,9 @@ export enum StringCount {
   Seven = '7',
   Twelve = '12',
 }
+
+export enum BtnKey {
+  ArrowDown = 'ArrowDown',
+  ArrowUp = 'ArrowUp',
+  Enter = 'Enter',
+}

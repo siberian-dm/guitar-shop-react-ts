@@ -1,19 +1,24 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { BtnKey, QueryField } from '../../../../../const';
+import {
+  ChangeEvent,
+  FocusEvent,
+  KeyboardEvent,
+  useEffect,
+  useState
+} from 'react';
 import { getPriceMaxLimit, getPriceMinLimit } from '../../../../../store/reducers/catalog-slice/selectors';
 import { NumberParam, useQueryParam } from 'use-query-params';
-import { QueryField } from '../../../../../const';
-import { useKeyPress } from '../../../../../hooks/use-key-press';
 import { useSelector } from 'react-redux';
 import { validatePriceMax, validatePriceMin } from '../../../../../utils/validate-price';
+
+enum InputId {
+  PriceMin = 'priceMin',
+  PriceMax = 'priceMax',
+}
 
 function FilterByPrice(): JSX.Element {
   const [priceMin, setPriceMin] = useState('');
   const [priceMax, setPriceMax] = useState('');
-  const [isPriceMinInputFocused, setIsPriceMinInputFocused] = useState(false);
-  const [isPriceMaxInputFocused, setIsPriceMaxInputFocused] = useState(false);
-
-  const isEnterKeyPressOnPriceMin = useKeyPress('Enter', isPriceMinInputFocused);
-  const isEnterKeyPressOnPriceMax = useKeyPress('Enter', isPriceMaxInputFocused);
 
   const [queryPriceMin, setQueryPriceMin] = useQueryParam(QueryField.PriceMin, NumberParam);
   const [queryPriceMax, setQueryPriceMax] = useQueryParam(QueryField.PriceMax, NumberParam);
@@ -30,78 +35,81 @@ function FilterByPrice(): JSX.Element {
   },
   [queryPriceMax, queryPriceMin]);
 
-  useEffect(() => {
-    if (isEnterKeyPressOnPriceMin || !isPriceMinInputFocused) {
-      const validatedPriceMin = validatePriceMin({
-        currentMin: priceMin,
-        currentMax: priceMax,
-        limitMin: priceMinLimit,
-        limitMax: priceMaxLimit,
-      });
+  const handleValidatePriceMin = () => {
+    const validatedPriceMin = validatePriceMin({
+      currentMin: priceMin,
+      currentMax: priceMax,
+      limitMin: priceMinLimit,
+      limitMax: priceMaxLimit,
+    });
 
-      const newQueryPriceMin = validatedPriceMin !== ''
-        ? Number(validatedPriceMin)
-        : undefined;
+    const newQueryPriceMin = validatedPriceMin !== ''
+      ? Number(validatedPriceMin)
+      : undefined;
 
-      if (validatedPriceMin !== priceMin) {
-        setPriceMin(validatedPriceMin);
-      }
-
-      if (newQueryPriceMin !== queryPriceMin) {
-        setQueryPriceMin(newQueryPriceMin);
-      }
+    if (validatedPriceMin !== priceMin) {
+      setPriceMin(validatedPriceMin);
     }
-  },
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [isEnterKeyPressOnPriceMin, isPriceMinInputFocused]);
 
-  useEffect(() => {
-    if (isEnterKeyPressOnPriceMax || !isPriceMaxInputFocused) {
-      const validatedPriceMax = validatePriceMax({
-        currentMin: priceMin,
-        currentMax: priceMax,
-        limitMin: priceMinLimit,
-        limitMax: priceMaxLimit,
-      });
-
-      const newQueryPriceMax = validatedPriceMax !== ''
-        ? Number(validatedPriceMax)
-        : undefined;
-
-      if (validatedPriceMax !== priceMax) {
-        setPriceMax(validatedPriceMax);
-      }
-
-      if (newQueryPriceMax !== queryPriceMax) {
-        setQueryPriceMax(newQueryPriceMax);
-      }
+    if (newQueryPriceMin !== queryPriceMin) {
+      setQueryPriceMin(newQueryPriceMin);
     }
-  },
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [isEnterKeyPressOnPriceMax, isPriceMaxInputFocused]);
-
-  const onPriceMinInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    setPriceMin(evt.target.value);
   };
 
-  const onPriceMaxInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    setPriceMax(evt.target.value);
+  const handleValidatePriceMax = () => {
+    const validatedPriceMax = validatePriceMax({
+      currentMin: priceMin,
+      currentMax: priceMax,
+      limitMin: priceMinLimit,
+      limitMax: priceMaxLimit,
+    });
+
+    const newQueryPriceMax = validatedPriceMax !== ''
+      ? Number(validatedPriceMax)
+      : undefined;
+
+    if (validatedPriceMax !== priceMax) {
+      setPriceMax(validatedPriceMax);
+    }
+
+    if (newQueryPriceMax !== queryPriceMax) {
+      setQueryPriceMax(newQueryPriceMax);
+    }
   };
 
-  const onPriceMinInputFocus = () => {
-    setIsPriceMinInputFocused(true);
+  const onInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    switch (evt.target.id) {
+      case InputId.PriceMin:
+        setPriceMin(evt.target.value);
+        break;
+      case InputId.PriceMax:
+        setPriceMax(evt.target.value);
+    }
   };
 
-  const onPriceMaxInputFocus = () => {
-    setIsPriceMaxInputFocused(true);
-  };
+  const onInputKeyDown = (id: string) =>
+    (evt: KeyboardEvent) => {
+      if (evt.key === BtnKey.Enter) {
+        evt.preventDefault();
 
-  const onPriceMinInputBlur = () => {
-    setIsPriceMinInputFocused(false);
-  };
+        switch (id) {
+          case InputId.PriceMin:
+            handleValidatePriceMin();
+            break;
+          case InputId.PriceMax:
+            handleValidatePriceMax();
+        }
+      }
+    };
 
-  const onPriceMaxInputBlur = () => {
-    setIsPriceMaxInputFocused(false);
+  const onInputBlur = (evt: FocusEvent) => {
+    switch (evt.target.id) {
+      case InputId.PriceMin:
+        handleValidatePriceMin();
+        break;
+      case InputId.PriceMax:
+        handleValidatePriceMax();
+    }
   };
 
   return (
@@ -116,11 +124,11 @@ function FilterByPrice(): JSX.Element {
           <input
             type="number"
             placeholder={String(priceMinLimit)}
-            id="priceMin"
+            id={InputId.PriceMin}
             name="от"
-            onChange={onPriceMinInputChange}
-            onFocus={onPriceMinInputFocus}
-            onBlur={onPriceMinInputBlur}
+            onChange={onInputChange}
+            onBlur={onInputBlur}
+            onKeyDown={onInputKeyDown(InputId.PriceMin)}
             value={priceMin}
           />
         </div>
@@ -129,11 +137,11 @@ function FilterByPrice(): JSX.Element {
           <input
             type="number"
             placeholder={String(priceMaxLimit)}
-            id="priceMax"
+            id={InputId.PriceMax}
             name="до"
-            onChange={onPriceMaxInputChange}
-            onFocus={onPriceMaxInputFocus}
-            onBlur={onPriceMaxInputBlur}
+            onChange={onInputChange}
+            onBlur={onInputBlur}
+            onKeyDown={onInputKeyDown(InputId.PriceMax)}
             value={priceMax}
           />
         </div>

@@ -1,6 +1,7 @@
 import SearchedItemList from './searched-item-list/searched-item-list';
 import SearchForm from './search-form/search-form';
 import { useEffect, useState } from 'react';
+import { BtnKey } from '../../../../const';
 
 function Search(): JSX.Element {
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -37,6 +38,28 @@ function Search(): JSX.Element {
   },
   [inputElement, isItemListShow, uListElement]);
 
+  useEffect(() => {
+    const onInputElementKeyDown = (evt: KeyboardEvent) => {
+      if (evt.key === BtnKey.ArrowDown) {
+        evt.preventDefault();
+        const firstListItem = uListElement?.firstChild as HTMLLIElement | null | undefined;
+
+        firstListItem?.focus();
+      }
+    };
+
+    if (isInputFocused) {
+      inputElement?.addEventListener('keydown', onInputElementKeyDown);
+    }
+    else {
+      inputElement?.removeEventListener('keydown', onInputElementKeyDown);
+    }
+    return () => {
+      inputElement?.removeEventListener('keydown', onInputElementKeyDown);
+    };
+  },
+  [inputElement, isInputFocused, uListElement?.firstChild]);
+
   return (
     <div className="form-search">
       <SearchForm
@@ -46,7 +69,6 @@ function Search(): JSX.Element {
       />
       <SearchedItemList
         setUListElement={setUListElement}
-        isInputFocused={isInputFocused}
         isItemListShow={isItemListShow}
       />
     </div>

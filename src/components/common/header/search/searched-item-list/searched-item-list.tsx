@@ -1,57 +1,33 @@
 import classNames from 'classnames';
 import styles from './searched-item-list.module.css';
-import { AppRoute } from '../../../../../const';
+import { AppRoute, BtnKey } from '../../../../../const';
 import { fetchGuitarsByName } from '../../../../../store/api-action';
 import { getNormalizedSearchResult, getSearchString } from '../../../../../store/reducers/search-slice/selectors';
+import { KeyboardEvent, useEffect, useRef } from 'react';
 import { resetSearchState } from '../../../../../store/reducers/search-slice/search-slice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useKeyPress } from '../../../../../hooks/use-key-press';
 
-type TProps = {
+export type TProps = {
   setUListElement: (uListElement: HTMLUListElement | null) => void;
-  isInputFocused: boolean;
   isItemListShow: boolean;
 }
 
 function SearchedItemList({
   setUListElement,
-  isInputFocused,
   isItemListShow,
 }: TProps): JSX.Element {
-  const [cursorIndex, setCursorIndex] = useState<number | null>(null);
-  const searchedItemListRef = useRef<HTMLUListElement | null>(null);
+  const itemListRef = useRef<HTMLUListElement | null>(null);
   const listItemRefs = useRef<{id: number, listItem: HTMLLIElement | null}[]>([]);
   const searchString = useSelector(getSearchString);
   const listItems = useSelector(getNormalizedSearchResult);
-
-  const isDownKeyPress = useKeyPress('ArrowDown', isItemListShow);
-  const isUpKeyPress = useKeyPress('ArrowUp', isItemListShow);
-  const isEnterKeyPress = useKeyPress('Enter', isItemListShow);
 
   const history = useHistory();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const refObject = cursorIndex !== null
-      ? listItemRefs.current[cursorIndex]
-      : null;
-
-    refObject?.listItem?.focus();
-  },
-  [cursorIndex]);
-
-  useEffect(() => {
-    setUListElement(searchedItemListRef.current);
+    setUListElement(itemListRef.current);
   });
-
-  useEffect(() => {
-    if (isInputFocused) {
-      setCursorIndex(null);
-    }
-  },
-  [isInputFocused]);
 
   useEffect(() => {
     if (searchString.length !== 0) {
@@ -66,39 +42,27 @@ function SearchedItemList({
   },
   [searchString, dispatch]);
 
-  useEffect(() => {
-    if (listItems.length && isDownKeyPress) {
-      setCursorIndex((prev) => {
-        if (prev === null) {
-          return 0;
-        }
+  const onListItemKeyDown = (id: number, itemIndex: number) =>
+    (evt: KeyboardEvent) => {
+      const maxIndex = listItemRefs.current.length - 1;
+      const indexDown = itemIndex < maxIndex ? itemIndex + 1 : itemIndex;
+      const indexUp = itemIndex > 0 ? itemIndex - 1 : itemIndex;
 
-        return prev < listItems.length - 1 ? prev + 1 : prev;
-      });
-    }
-  }, [isDownKeyPress, listItems.length]);
-
-  useEffect(() => {
-    if (listItems.length && isUpKeyPress) {
-      setCursorIndex((prev) => {
-        if (prev === null) {
-          return prev;
-        }
-
-        return prev > 0 ? prev - 1 : prev;
-      });
-    }
-  }, [isUpKeyPress, listItems.length]);
-
-  useEffect(() => {
-    const refObject = cursorIndex !== null
-      ? listItemRefs.current[cursorIndex]
-      : null;
-
-    if (isEnterKeyPress && refObject) {
-      history.push(`${AppRoute.Product}/${refObject.id}`);
-    }
-  }, [cursorIndex, history, isEnterKeyPress]);
+      switch (evt.key) {
+        case BtnKey.Enter:
+          evt.preventDefault();
+          history.push(`${AppRoute.Product}/${id}`);
+          break;
+        case BtnKey.ArrowDown:
+          evt.preventDefault();
+          listItemRefs.current[indexDown].listItem?.focus();
+          break;
+        case BtnKey.ArrowUp:
+          evt.preventDefault();
+          listItemRefs.current[indexUp].listItem?.focus();
+          break;
+      }
+    };
 
   const onListItemClick = (id: number) => () => {
     history.push(`${AppRoute.Product}/${id}`);
@@ -113,17 +77,20 @@ function SearchedItemList({
 
   return (
     <ul
-      ref={searchedItemListRef}
+      ref={itemListRef}
       className={selectListClass}
+      style={{padding: '2px 5px 5px 8px'}}
     >
       {listItems.length !== 0 && listItems
         .map(({ name, id }, index) => (
           <li
             ref={(listItem) => listItemRefs.current[index] = {id, listItem}}
             key={id}
+            style={{padding: '4px 10px 4px 30px'}}
             className="form-search__select-item"
             tabIndex={0}
             onClick={onListItemClick(id)}
+            onKeyDown={onListItemKeyDown(id, index)}
           >
             {name}
           </li>
