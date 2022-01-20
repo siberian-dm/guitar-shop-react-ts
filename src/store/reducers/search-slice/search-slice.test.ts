@@ -1,4 +1,4 @@
-import searchSlice, { initialState, resetSearchState, setSearchedGuitars } from './search-slice';
+import searchSlice, { initialState, resetSearchState, setSearchedGuitars, setSearchedString } from './search-slice';
 import { mockSearchedGuitars } from '../../../mocks/app-mock-data';
 
 const reducer = searchSlice.reducer;
@@ -16,6 +16,14 @@ describe('Reducer: searchFormSlice', () => {
       .toEqual({
         ...mockState,
         searchedGuitars: mockSearchedGuitars,
+      });
+  });
+
+  it('should update searchString by setSearchedString', () => {
+    expect(reducer(mockState, setSearchedString('test')))
+      .toEqual({
+        ...mockState,
+        searchString: 'test',
       });
   });
 
