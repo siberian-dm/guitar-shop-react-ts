@@ -26,6 +26,7 @@ describe('Reducer: catalogSlice', () => {
     expect(reducer(mockState, setGuitarsCards(mockGuitars)))
       .toEqual({
         ...mockState,
+        isDataLoaded: true,
         guitarsCards: mockGuitars,
       });
   });

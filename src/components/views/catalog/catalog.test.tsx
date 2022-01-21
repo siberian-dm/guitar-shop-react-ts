@@ -6,7 +6,7 @@ import { configureMockStore } from '@jedmao/redux-mock-store';
 import { createAPI } from '../../../services/api';
 import { createMemoryHistory } from 'history';
 import { getMockGuitarCardsWithComments } from '../../../mocks/app-mock-data';
-import { initialState as searchFormInitialState } from '../../../store/reducers/search-form-slice/search-form-slice';
+import { initialState as searchFormInitialState } from '../../../store/reducers/search-slice/search-slice';
 import { initialState as catalogInitialState } from '../../../store/reducers/catalog-slice/catalog-slice';
 import { Provider } from 'react-redux';
 import { QueryParamProvider } from 'use-query-params';
@@ -23,7 +23,7 @@ const mockStore = configureMockStore(middlewares);
 const history = createMemoryHistory();
 
 const store = mockStore({
-  [ReducerName.SearchForm]: {
+  [ReducerName.Search]: {
     ...searchFormInitialState,
   },
   [ReducerName.Catalog]: {

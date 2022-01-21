@@ -1,9 +1,20 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { BtnKey, QueryField } from '../../../../../const';
+import {
+  ChangeEvent,
+  FocusEvent,
+  KeyboardEvent,
+  useEffect,
+  useState
+} from 'react';
 import { getPriceMaxLimit, getPriceMinLimit } from '../../../../../store/reducers/catalog-slice/selectors';
 import { NumberParam, useQueryParam } from 'use-query-params';
-import { QueryField } from '../../../../../const';
 import { useSelector } from 'react-redux';
 import { validatePriceMax, validatePriceMin } from '../../../../../utils/validate-price';
+
+enum InputId {
+  PriceMin = 'priceMin',
+  PriceMax = 'priceMax',
+}
 
 function FilterByPrice(): JSX.Element {
   const [priceMin, setPriceMin] = useState('');
@@ -24,15 +35,7 @@ function FilterByPrice(): JSX.Element {
   },
   [queryPriceMax, queryPriceMin]);
 
-  const onPriceMinInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    setPriceMin(evt.target.value);
-  };
-
-  const onPriceMaxInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    setPriceMax(evt.target.value);
-  };
-
-  const onPriceMinInputBlur = () => {
+  const handleValidatePriceMin = () => {
     const validatedPriceMin = validatePriceMin({
       currentMin: priceMin,
       currentMax: priceMax,
@@ -53,7 +56,7 @@ function FilterByPrice(): JSX.Element {
     }
   };
 
-  const onPriceMaxInputBlur = () => {
+  const handleValidatePriceMax = () => {
     const validatedPriceMax = validatePriceMax({
       currentMin: priceMin,
       currentMax: priceMax,
@@ -74,6 +77,41 @@ function FilterByPrice(): JSX.Element {
     }
   };
 
+  const onInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    switch (evt.target.id) {
+      case InputId.PriceMin:
+        setPriceMin(evt.target.value);
+        break;
+      case InputId.PriceMax:
+        setPriceMax(evt.target.value);
+    }
+  };
+
+  const onInputKeyDown = (id: string) =>
+    (evt: KeyboardEvent) => {
+      if (evt.key === BtnKey.Enter) {
+        evt.preventDefault();
+
+        switch (id) {
+          case InputId.PriceMin:
+            handleValidatePriceMin();
+            break;
+          case InputId.PriceMax:
+            handleValidatePriceMax();
+        }
+      }
+    };
+
+  const onInputBlur = (evt: FocusEvent) => {
+    switch (evt.target.id) {
+      case InputId.PriceMin:
+        handleValidatePriceMin();
+        break;
+      case InputId.PriceMax:
+        handleValidatePriceMax();
+    }
+  };
+
   return (
     <fieldset
       data-testid="filter-by-price"
@@ -86,10 +124,11 @@ function FilterByPrice(): JSX.Element {
           <input
             type="number"
             placeholder={String(priceMinLimit)}
-            id="priceMin"
+            id={InputId.PriceMin}
             name="от"
-            onChange={onPriceMinInputChange}
-            onBlur={onPriceMinInputBlur}
+            onChange={onInputChange}
+            onBlur={onInputBlur}
+            onKeyDown={onInputKeyDown(InputId.PriceMin)}
             value={priceMin}
           />
         </div>
@@ -98,10 +137,11 @@ function FilterByPrice(): JSX.Element {
           <input
             type="number"
             placeholder={String(priceMaxLimit)}
-            id="priceMax"
+            id={InputId.PriceMax}
             name="до"
-            onChange={onPriceMaxInputChange}
-            onBlur={onPriceMaxInputBlur}
+            onChange={onInputChange}
+            onBlur={onInputBlur}
+            onKeyDown={onInputKeyDown(InputId.PriceMax)}
             value={priceMax}
           />
         </div>

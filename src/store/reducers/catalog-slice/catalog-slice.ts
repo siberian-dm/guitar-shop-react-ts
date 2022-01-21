@@ -3,6 +3,7 @@ import { FetchState, ReducerName, TCatalogDataState } from '../../../types/store
 
 export const initialState: TCatalogDataState = {
   guitarsCards: [],
+  isDataLoaded: false,
   fetchState: FetchState.Idle,
   priceMinLimit: 0,
   priceMaxLimit: 0,
@@ -15,6 +16,7 @@ const catalogSlice = createSlice({
   reducers: {
     setGuitarsCards: (state, action) => {
       state.guitarsCards = action.payload;
+      state.isDataLoaded = true;
     },
     setPriceMinLimit: (state, action) => {
       state.priceMinLimit = action.payload;

@@ -3,23 +3,27 @@ import { ReducerName, TSearchFormDataState } from '../../../types/store';
 
 export const initialState: TSearchFormDataState = {
   searchedGuitars: [],
+  searchString: '',
 };
 
-const searchFormSlice = createSlice({
-  name: ReducerName.SearchForm,
+const searchSlice = createSlice({
+  name: ReducerName.Search,
   initialState,
   reducers: {
     setSearchedGuitars: (state, action) => {
       state.searchedGuitars = action.payload;
     },
-    resetSearchFormState: (state) => {
+    setSearchedString: (state, action) => {
+      state.searchString = action.payload;
+    },
+    resetSearchState: (state) => {
       state.searchedGuitars = [];
     },
   },
 });
 
-const { actions } = searchFormSlice;
+const { actions } = searchSlice;
 
-export const { setSearchedGuitars, resetSearchFormState } = actions;
+export const { setSearchedGuitars, setSearchedString, resetSearchState } = actions;
 
-export default searchFormSlice;
+export default searchSlice;

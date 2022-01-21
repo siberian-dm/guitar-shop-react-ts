@@ -1,5 +1,5 @@
 import Logo, { LogoType } from '../logo/logo';
-import SearchForm from './search-form/search-form';
+import Search from './search/search';
 import { AppRoute } from '../../../const';
 import { Link } from 'react-router-dom';
 
@@ -42,7 +42,7 @@ function Header(): JSX.Element {
             </li>
           </ul>
         </nav>
-        <SearchForm />
+        <Search />
         <Link
           className="header__cart-link"
           to={''}

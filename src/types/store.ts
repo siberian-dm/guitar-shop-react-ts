@@ -3,7 +3,7 @@ import { TGuitarCards, TSearchedGuitars } from './app-data';
 
 export enum ReducerName {
   Catalog = 'catalog',
-  SearchForm = 'searchForm',
+  Search = 'search',
 }
 
 export enum FetchState {
@@ -13,6 +13,7 @@ export enum FetchState {
 
 export type TCatalogDataState = {
   guitarsCards: [] | TGuitarCards;
+  isDataLoaded: boolean;
   fetchState: FetchState;
   priceMinLimit: number;
   priceMaxLimit: number;
@@ -21,6 +22,7 @@ export type TCatalogDataState = {
 
 export type TSearchFormDataState = {
   searchedGuitars: [] | TSearchedGuitars;
+  searchString: string;
 }
 
 export type TRootState = ReturnType<typeof rootReducer>;
