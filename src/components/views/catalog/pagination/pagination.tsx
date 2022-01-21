@@ -22,8 +22,8 @@ function Pagination(): JSX.Element {
 
   const pageSlice = pageNumbers.slice(firstIndexSlice, secondIndexSlice);
 
-  const isShowPrevBtn = pageSlice[0] > pageNumbers[0];
-  const isShowNextBtn = pageSlice[pageSlice.length - 1] < pageNumbers[pageNumbers.length -1];
+  const isShowPrevBtn = pageNumberParam > 1;
+  const isShowNextBtn = pageNumberParam < pageNumbers.length;
 
   return (
     <div
@@ -35,7 +35,7 @@ function Pagination(): JSX.Element {
           <li className="pagination__page pagination__page--prev" id="prev">
             <Link
               className="link pagination__page-link"
-              to={`${AppRoute.CatalogPage}${pageSlice[0] - 1}${search}`}
+              to={`${AppRoute.CatalogPage}${pageNumberParam - 1}${search}`}
             >
               Назад
             </Link>
@@ -52,7 +52,7 @@ function Pagination(): JSX.Element {
           <li className="pagination__page pagination__page--next" id="next">
             <Link
               className="link pagination__page-link"
-              to={`${AppRoute.CatalogPage}${pageSlice[pageSlice.length - 1] + 1}${search}`}
+              to={`${AppRoute.CatalogPage}${pageNumberParam + 1}${search}`}
             >
               Далее
             </Link>

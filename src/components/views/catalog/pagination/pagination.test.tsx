@@ -37,8 +37,8 @@ const fakePagination = (
 );
 
 describe('Component: Pagination', () => {
-  it('should render correctly when current page is 3', () => {
-    history.push(`${AppRoute.CatalogPage}3`);
+  it('should render correctly when current page is 1', () => {
+    history.push(`${AppRoute.CatalogPage}1`);
 
     render(fakePagination);
 
@@ -52,8 +52,8 @@ describe('Component: Pagination', () => {
     expect(screen.getByText('Далее')).toBeInTheDocument();
   });
 
-  it('should render correctly when current page is 6', () => {
-    history.push(`${AppRoute.CatalogPage}6`);
+  it('should render correctly when current page is 2', () => {
+    history.push(`${AppRoute.CatalogPage}2`);
 
     render(fakePagination);
 
@@ -61,22 +61,23 @@ describe('Component: Pagination', () => {
     expect(linkItems.length).toEqual(5);
 
     expect(screen.getByText('Назад')).toBeInTheDocument();
-    expect(screen.getByText('4')).toBeInTheDocument();
-    expect(screen.getByText('5')).toBeInTheDocument();
-    expect(screen.getByText('6')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument();
     expect(screen.getByText('Далее')).toBeInTheDocument();
   });
 
-  it('should render correctly when current page is 7', () => {
-    history.push(`${AppRoute.CatalogPage}7`);
+  it('should render correctly when current page is 5', () => {
+    history.push(`${AppRoute.CatalogPage}5`);
 
     render(fakePagination);
 
     const linkItems = screen.getAllByRole('listitem');
-    expect(linkItems.length).toEqual(2);
+    expect(linkItems.length).toEqual(3);
 
     expect(screen.getByText('Назад')).toBeInTheDocument();
-    expect(screen.getByText('7')).toBeInTheDocument();
+    expect(screen.getByText('4')).toBeInTheDocument();
+    expect(screen.getByText('5')).toBeInTheDocument();
     expect(screen.queryByText('Далее')).not.toBeInTheDocument();
   });
 });
