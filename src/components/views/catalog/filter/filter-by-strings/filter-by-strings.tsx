@@ -10,6 +10,11 @@ const enum CheckBoxName {
 }
 
 function FilterByStrings(): JSX.Element {
+  const [isFourStringsCheck, setIsFourStringsCheck] = useState(false);
+  const [isSixStringsCheck, setIsSixStringsCheck] = useState(false);
+  const [isSevenStringsCheck, setIsSevenStringsCheck] = useState(false);
+  const [isTwelveStringsCheck, setIsTwelveStringsCheck] = useState(false);
+
   const [queryTypes] = useQueryParam(
     QueryField.Type,
     withDefault(ArrayParam, [] as string[]),
@@ -28,18 +33,19 @@ function FilterByStrings(): JSX.Element {
   const isSevenStringsDisabled = !isElectricCheck && !isAcousticCheck && isUkuleleCheck;
   const isTwelveStringsDisabled = !isAcousticCheck && (isUkuleleCheck || isElectricCheck);
 
-  const [isFourStringsCheck, setIsFourStringsCheck] = useState(
-    queryStringCounts.includes(StringCount.Four) && !isFourStringsDisabled,
-  );
-  const [isSixStringsCheck, setIsSixStringsCheck] = useState(
-    queryStringCounts.includes(StringCount.Six) && !isSixStringsDisabled,
-  );
-  const [isSevenStringsCheck, setIsSevenStringsCheck] = useState(
-    queryStringCounts.includes(StringCount.Seven) && !isSevenStringsDisabled,
-  );
-  const [isTwelveStringsCheck, setIsTwelveStringsCheck] = useState(
-    queryStringCounts.includes(StringCount.Twelve) && !isTwelveStringsDisabled,
-  );
+  useEffect(() => {
+    setIsFourStringsCheck(queryStringCounts.includes(StringCount.Four) && !isFourStringsDisabled);
+    setIsSixStringsCheck(queryStringCounts.includes(StringCount.Six) && !isSixStringsDisabled);
+    setIsSevenStringsCheck(queryStringCounts.includes(StringCount.Seven) && !isSevenStringsDisabled);
+    setIsTwelveStringsCheck(queryStringCounts.includes(StringCount.Twelve) && !isTwelveStringsDisabled);
+  },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [
+    isFourStringsDisabled,
+    isSevenStringsDisabled,
+    isSixStringsDisabled,
+    isTwelveStringsDisabled,
+  ]);
 
   useEffect(() => {
     const newQueryStringCounts = [
@@ -51,6 +57,7 @@ function FilterByStrings(): JSX.Element {
 
     setQueryStringCounts(newQueryStringCounts);
   },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   [
     isFourStringsCheck,
     isFourStringsDisabled,
@@ -60,7 +67,6 @@ function FilterByStrings(): JSX.Element {
     isSixStringsDisabled,
     isTwelveStringsCheck,
     isTwelveStringsDisabled,
-    setQueryStringCounts,
   ]);
 
   const onCheckboxChange = (evt: ChangeEvent) => {

@@ -9,6 +9,10 @@ const enum CheckBoxName {
 }
 
 function FilterByType(): JSX.Element {
+  const [isAcousticCheck, setIsAcousticCheck] = useState(false);
+  const [isElectricCheck, setIsElectricCheck] = useState(false);
+  const [isUkuleleCheck, setIsUkuleleCheck] = useState(false);
+
   const [queryTypes, setQueryTypes] = useQueryParam(
     QueryField.Type,
     withDefault(ArrayParam, [] as string[]),
@@ -27,15 +31,13 @@ function FilterByType(): JSX.Element {
   const isElectricDisabled = isTwelveStringsCheck && !isFourStringsCheck && !isSixStringsCheck && !isSevenStringsCheck;
   const isUkuleleDisabled = (isSixStringsCheck || isSevenStringsCheck || isTwelveStringsCheck) && !isFourStringsCheck;
 
-  const [isAcousticCheck, setIsAcousticCheck] = useState(
-    queryTypes.includes(GuitarType.Acoustic) && !isAcousticDisabled,
-  );
-  const [isElectricCheck, setIsElectricCheck] = useState(
-    queryTypes.includes(GuitarType.Electric) && !isElectricDisabled,
-  );
-  const [isUkuleleCheck, setIsUkuleleCheck] = useState(
-    queryTypes.includes(GuitarType.Ukulele) && !isUkuleleDisabled,
-  );
+  useEffect(() => {
+    setIsAcousticCheck(queryTypes.includes(GuitarType.Acoustic) && !isAcousticDisabled);
+    setIsElectricCheck(queryTypes.includes(GuitarType.Electric) && !isElectricDisabled);
+    setIsUkuleleCheck(queryTypes.includes(GuitarType.Ukulele) && !isUkuleleDisabled);
+  },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [isAcousticDisabled, isElectricDisabled, isUkuleleDisabled]);
 
   useEffect(() => {
     const newQueryTypes = [
@@ -46,6 +48,7 @@ function FilterByType(): JSX.Element {
 
     setQueryTypes(newQueryTypes);
   },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   [
     isAcousticCheck,
     isAcousticDisabled,
@@ -53,7 +56,6 @@ function FilterByType(): JSX.Element {
     isElectricDisabled,
     isUkuleleCheck,
     isUkuleleDisabled,
-    setQueryTypes,
   ]);
 
   const onCheckboxChange = (evt: ChangeEvent) => {
