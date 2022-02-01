@@ -61,12 +61,12 @@ function Product(): JSX.Element {
     <MainLayout>
       <main className="page-content">
         <div className="container">
-          <h1 className="page-content__title title title--bigger">Товар</h1>
-          <Breadcrumbs />
           {isLoading ? <Loader />
             :
             data !== null && (
               <>
+                <h1 className="page-content__title title title--bigger">{data.name}</h1>
+                <Breadcrumbs lastItemName={data.name}/>
                 <ProductDetail data={data}/>
                 <Reviews />
               </>
