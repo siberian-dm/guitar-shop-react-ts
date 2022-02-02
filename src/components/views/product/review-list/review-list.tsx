@@ -1,5 +1,6 @@
 import Loader from '../../../common/loader/loader';
 import ReviewItem from '../rewiew-item/review-item';
+import styles from './review-list.module.css';
 import { APIRoute, createAPI } from '../../../../services/api';
 import { QueryField } from '../../../../const';
 import { TComments } from '../../../../types/app-data';
@@ -17,6 +18,7 @@ type TProps = {
 function ReviewList({ guitarId }: TProps): JSX.Element {
   const [reviews, setReviews] = useState<TComments | []>([]);
   const [totalCount, setTotalCount] = useState(0);
+
   const [fetchReviews, isLoading, error] = useFetch(
     async (id: string) => {
       const firstIndexSlice = reviews.length;
@@ -25,7 +27,6 @@ function ReviewList({ guitarId }: TProps): JSX.Element {
       const { data, headers } = await api.get(
         `${APIRoute.Guitars}/${id}/comments`,
         {params: {
-          // [QueryField.Limit]: LOAD_LIMIT,
           [QueryField.Start]: firstIndexSlice,
           [QueryField.End]: secondIndexSlice,
         }},
@@ -46,6 +47,7 @@ function ReviewList({ guitarId }: TProps): JSX.Element {
   };
 
   const isShowMoreBtn = reviews.length < totalCount;
+  const isShowUpBtn = reviews.length !== 0;
 
   return (
     <section className="reviews">
@@ -71,12 +73,14 @@ function ReviewList({ guitarId }: TProps): JSX.Element {
           Показать еще отзывы
         </button>
       )}
-      <a
-        className="button button--up button--red-border button--big reviews__up-button"
-        href="#header"
-      >
-        Наверх
-      </a>
+      {isShowUpBtn && (
+        <a
+          className={`button button--up button--red-border button--big reviews__up-button ${styles['reviews__up-button']}`}
+          href="#header"
+        >
+          Наверх
+        </a>
+      )}
     </section>
   );
 }

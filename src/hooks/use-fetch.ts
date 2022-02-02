@@ -10,6 +10,7 @@ export const useFetch = (
 
   const fetching = async (...args: any[]) => {
     try {
+      setError(null);
       setIsLoading(true);
       await callback(...args);
     }
