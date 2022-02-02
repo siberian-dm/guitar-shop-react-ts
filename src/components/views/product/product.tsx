@@ -3,7 +3,7 @@ import Breadcrumbs from '../../common/breadcrumbs/breadcrumbs';
 import Loader from '../../common/loader/loader';
 import MainLayout from '../../common/main-layout/main-layout';
 import ProductDetail from './product-detail/product-detail';
-import Reviews from './reviews/reviews';
+import ReviewList from './review-list/review-list';
 import { APIRoute, createAPI } from '../../../services/api';
 import { AppRoute } from '../../../const';
 import { Redirect, useParams } from 'react-router-dom';
@@ -68,7 +68,7 @@ function Product(): JSX.Element {
                 <h1 className="page-content__title title title--bigger">{data.name}</h1>
                 <Breadcrumbs lastItemName={data.name}/>
                 <ProductDetail data={data}/>
-                <Reviews />
+                {id && <ReviewList guitarId={id}/>}
               </>
             )}
         </div>
