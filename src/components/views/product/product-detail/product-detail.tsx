@@ -1,9 +1,9 @@
+import classNames from 'classnames';
 import ProductRate, { RateType } from '../../../common/product-rate/product-rate';
 import { formatPrice } from '../../../../utils/common';
 import { GuitarType } from '../../../../const';
-import { TGuitarCard } from '../../../../types/app-data';
 import { MouseEvent, useState } from 'react';
-import classNames from 'classnames';
+import { TGuitarCard } from '../../../../types/app-data';
 
 const productTypes: {[key: string]: string} = {
   [GuitarType.Acoustic]: 'Акустическая гитара',

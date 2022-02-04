@@ -1,10 +1,11 @@
 import Loader from '../../../common/loader/loader';
+import ModalReview from '../modal-review/modal-review';
 import ReviewItem from '../rewiew-item/review-item';
 import styles from './review-list.module.css';
 import { APIRoute, createAPI } from '../../../../services/api';
+import { MouseEvent, useEffect, useState } from 'react';
 import { QueryField, SortOrder, SortType } from '../../../../const';
 import { TComments } from '../../../../types/app-data';
-import { useEffect, useState } from 'react';
 import { useFetch } from '../../../../hooks/use-fetch';
 
 const LOAD_LIMIT = 3;
@@ -12,12 +13,14 @@ const LOAD_LIMIT = 3;
 const api = createAPI();
 
 type TProps = {
+  guitarName: string;
   guitarId: string;
 }
 
-function ReviewList({ guitarId }: TProps): JSX.Element {
+function ReviewList({ guitarName, guitarId }: TProps): JSX.Element {
   const [reviews, setReviews] = useState<TComments | []>([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [isModalReviewActive, setIsModalReviewActive] = useState(false);
 
   const [fetchReviews, isLoading, error] = useFetch(
     async (id: string) => {
@@ -48,6 +51,11 @@ function ReviewList({ guitarId }: TProps): JSX.Element {
     fetchReviews(guitarId);
   };
 
+  const onReviewBtnClick = (evt: MouseEvent) => {
+    evt.preventDefault();
+    setIsModalReviewActive(true);
+  };
+
   const isShowMoreBtn = reviews.length < totalCount;
 
   return (
@@ -56,6 +64,7 @@ function ReviewList({ guitarId }: TProps): JSX.Element {
       <a
         className="button button--red-border button--big reviews__sumbit-button"
         href="#no_scroll"
+        onClick={onReviewBtnClick}
       >
         Оставить отзыв
       </a>
@@ -78,6 +87,12 @@ function ReviewList({ guitarId }: TProps): JSX.Element {
       >
         Наверх
       </a>
+      {isModalReviewActive && (
+        <ModalReview
+          guitarName={guitarName}
+          setIsActive={setIsModalReviewActive}
+        />
+      )}
     </section>
   );
 }

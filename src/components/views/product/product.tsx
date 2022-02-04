@@ -50,7 +50,7 @@ function Product(): JSX.Element {
                 <h1 className="page-content__title title title--bigger">{guitar.name}</h1>
                 <Breadcrumbs lastItemName={guitar.name}/>
                 <ProductDetail data={guitar}/>
-                {guitarId  && <ReviewList guitarId={guitarId}/>}
+                {guitarId  && <ReviewList guitarName={guitar.name} guitarId={guitarId}/>}
               </>
             )}
         </div>
