@@ -17,6 +17,7 @@ export enum AppRoute {
 export enum SortType {
   Price = 'price',
   Rating = 'rating',
+  CreateAt = 'createAt',
 }
 
 export enum SortOrder {

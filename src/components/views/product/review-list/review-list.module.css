@@ -1,3 +1,9 @@
-.reviews__up-button {
+.up-button {
   z-index: 1;
+}
+
+.no-reviews-text {
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
 }

@@ -2,7 +2,7 @@ import Loader from '../../../common/loader/loader';
 import ReviewItem from '../rewiew-item/review-item';
 import styles from './review-list.module.css';
 import { APIRoute, createAPI } from '../../../../services/api';
-import { QueryField } from '../../../../const';
+import { QueryField, SortOrder, SortType } from '../../../../const';
 import { TComments } from '../../../../types/app-data';
 import { useEffect, useState } from 'react';
 import { useFetch } from '../../../../hooks/use-fetch';
@@ -29,6 +29,8 @@ function ReviewList({ guitarId }: TProps): JSX.Element {
         {params: {
           [QueryField.Start]: firstIndexSlice,
           [QueryField.End]: secondIndexSlice,
+          [QueryField.Sort]: SortType.CreateAt,
+          [QueryField.Order]: SortOrder.Descending,
         }},
       );
 
@@ -47,7 +49,6 @@ function ReviewList({ guitarId }: TProps): JSX.Element {
   };
 
   const isShowMoreBtn = reviews.length < totalCount;
-  const isShowUpBtn = reviews.length !== 0;
 
   return (
     <section className="reviews">
@@ -58,12 +59,10 @@ function ReviewList({ guitarId }: TProps): JSX.Element {
       >
         Оставить отзыв
       </a>
-      {reviews !==null && (
-        reviews.map((review) => <ReviewItem key={review.id} review={review}/>)
-      )}
-
+      {reviews.length !== 0
+        ? reviews.map((review) => <ReviewItem key={review.id} review={review}/>)
+        : <p className={styles['no-reviews-text']}>По данному товару еще нет отзывов...</p>}
       {error && <h3>{error.message}</h3>}
-
       {isLoading && <Loader />}
       {isShowMoreBtn && (
         <button
@@ -73,14 +72,12 @@ function ReviewList({ guitarId }: TProps): JSX.Element {
           Показать еще отзывы
         </button>
       )}
-      {isShowUpBtn && (
-        <a
-          className={`button button--up button--red-border button--big reviews__up-button ${styles['reviews__up-button']}`}
-          href="#header"
-        >
-          Наверх
-        </a>
-      )}
+      <a
+        className={`button button--up button--red-border button--big reviews__up-button ${styles['up-button']}`}
+        href="#header"
+      >
+        Наверх
+      </a>
     </section>
   );
 }
