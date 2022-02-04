@@ -1,5 +1,6 @@
-import { TComment } from '../../../../types/app-data';
 import ProductRate, { RateType } from '../../../common/product-rate/product-rate';
+import { formatDate } from '../../../../utils/date';
+import { TComment } from '../../../../types/app-data';
 
 type TProps = {
   review: TComment;
@@ -20,7 +21,7 @@ function ReviewItem({ review }: TProps): JSX.Element {
       <div className="review__wrapper">
         <h4 className="review__title review__title--author title title--lesser">
           {userName}
-        </h4><span className="review__date">{createAt}</span>
+        </h4><span className="review__date">{formatDate(createAt)}</span>
       </div>
       <ProductRate rating={rating} rateType={RateType.ProductReview}/>
       <h4 className="review__title title title--lesser">Достоинства:</h4>
