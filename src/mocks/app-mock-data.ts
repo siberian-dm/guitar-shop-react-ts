@@ -11,8 +11,8 @@ export const mockSearchedGuitars = [
 const getMockComment = (guitarId: number) => ({
   id: faker.datatype.uuid(),
   userName: faker.name.firstName(),
-  advantages: faker.lorem.paragraph(),
-  disadvantages: faker.lorem.paragraph(),
+  advantage: faker.lorem.paragraph(),
+  disadvantage: faker.lorem.paragraph(),
   comment: faker.lorem.paragraph(),
   rating: faker.datatype.float({min: 1, max: 5, precision: 0.1}),
   createAt: faker.date.past().toString(),

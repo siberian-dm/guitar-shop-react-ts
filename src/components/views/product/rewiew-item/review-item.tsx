@@ -9,8 +9,8 @@ type TProps = {
 function ReviewItem({ review }: TProps): JSX.Element {
   const {
     userName,
-    advantages,
-    disadvantages,
+    advantage,
+    disadvantage,
     comment,
     rating,
     createAt,
@@ -25,9 +25,9 @@ function ReviewItem({ review }: TProps): JSX.Element {
       </div>
       <ProductRate rating={rating} rateType={RateType.ProductReview}/>
       <h4 className="review__title title title--lesser">Достоинства:</h4>
-      <p className="review__value">{advantages}</p>
+      <p className="review__value">{advantage}</p>
       <h4 className="review__title title title--lesser">Недостатки:</h4>
-      <p className="review__value">{disadvantages}</p>
+      <p className="review__value">{disadvantage}</p>
       <h4 className="review__title title title--lesser">Комментарий:</h4>
       <p className="review__value">{comment}</p>
     </div>
