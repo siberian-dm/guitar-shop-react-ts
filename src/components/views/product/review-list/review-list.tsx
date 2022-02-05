@@ -1,5 +1,6 @@
 import Loader from '../../../common/loader/loader';
 import ModalReview from '../modal-review/modal-review';
+import ModalSuccess from '../modal-success/modal-success';
 import ReviewItem from '../rewiew-item/review-item';
 import styles from './review-list.module.css';
 import { APIRoute, createAPI } from '../../../../services/api';
@@ -21,6 +22,7 @@ function ReviewList({ guitarName, guitarId }: TProps): JSX.Element {
   const [reviews, setReviews] = useState<TComments | []>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [isModalReviewActive, setIsModalReviewActive] = useState(false);
+  const [isModalSuccessActive, setIsModalSuccessActive] = useState(false);
 
   const [fetchReviews, isLoading, error] = useFetch(
     async (id: string) => {
@@ -89,8 +91,16 @@ function ReviewList({ guitarName, guitarId }: TProps): JSX.Element {
       </a>
       {isModalReviewActive && (
         <ModalReview
+          guitarId={+guitarId}
           guitarName={guitarName}
           setIsActive={setIsModalReviewActive}
+          setReviews={setReviews}
+          onPostSuccess={setIsModalSuccessActive}
+        />
+      )}
+      {isModalSuccessActive && (
+        <ModalSuccess
+          setIsActive={setIsModalSuccessActive}
         />
       )}
     </section>
