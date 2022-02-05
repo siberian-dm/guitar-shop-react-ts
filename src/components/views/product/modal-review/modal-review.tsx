@@ -1,15 +1,60 @@
 import FocusLock from 'react-focus-lock';
-import { useEffect, useRef } from 'react';
+import RateRadioInput from '../rate-radio-input/rate-radio-input';
 import styles from './modal-review.module.css';
+import { APIRoute, createAPI } from '../../../../services/api';
+import {
+  FormEvent,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
+import { TComment, TComments } from '../../../../types/app-data';
+import { toast } from 'react-toastify';
+import { useFetch } from '../../../../hooks/use-fetch';
+
+const api = createAPI();
+
+const radioItems = [
+  {id: 'star-5', name: 'rate', value: 5, title: 'Отлично'},
+  {id: 'star-4', name: 'rate', value: 4, title: 'Хорошо'},
+  {id: 'star-3', name: 'rate', value: 3, title: 'Нормально'},
+  {id: 'star-2', name: 'rate', value: 2, title: 'Плохо'},
+  {id: 'star-1', name: 'rate', value: 1, title: 'Ужасно'},
+];
 
 type TProps = {
+  guitarId: number;
   guitarName: string;
   setIsActive: (isActive: boolean) => void;
+  setReviews: React.Dispatch<React.SetStateAction<TComments | []>>;
+  onPostSuccess: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function ModalReview({ guitarName, setIsActive }: TProps): JSX.Element {
+function ModalReview({
+  guitarId,
+  guitarName,
+  setIsActive,
+  setReviews,
+  onPostSuccess,
+}: TProps): JSX.Element {
+  const [isWarning, setIsWarning] = useState({
+    userName: false,
+    advantage: false,
+    disadvantage: false,
+    comment: false,
+    rating: false,
+  });
 
-  const modalReview = useRef<HTMLDivElement | null>(null);
+  const userNameRef = useRef<HTMLInputElement | null>(null);
+  const advantageRef = useRef<HTMLInputElement | null>(null);
+  const disadvantageRef = useRef<HTMLInputElement | null>(null);
+  const commentRef = useRef<HTMLTextAreaElement | null>(null);
+  const radioInputRefs = useRef<(HTMLInputElement | null)[] | []>([]);
+
+  const [postReview, isLoading, error] = useFetch(async (reviewData) => {
+    const { data } = await api.post<TComment>(APIRoute.Comments, reviewData);
+    setReviews((prev) => [data, ...prev]);
+  });
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -34,17 +79,62 @@ function ModalReview({ guitarName, setIsActive }: TProps): JSX.Element {
     };
   }, [setIsActive]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+    }
+  }, [error]);
+
   const onModalOverlayClick = () => {
-    setIsActive(false);
+    if (!isLoading) {
+      setIsActive(false);
+    }
   };
 
   const onCloseBtnClick = () => {
     setIsActive(false);
   };
 
+  const onFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    const rating = radioInputRefs.current?.find((radioInput) => radioInput?.checked === true)?.value;
+
+    const isUserNameValid = userNameRef.current?.value !== '';
+    const isRatingValid = !!rating;
+    const isAdvantageValid = advantageRef.current?.value !== '';
+    const isDisadvantageValid = disadvantageRef.current?.value !== '';
+    const isCommentValid = commentRef.current?.value !== '';
+
+    setIsWarning({
+      userName: !isUserNameValid,
+      rating: !isRatingValid,
+      advantage: !isAdvantageValid,
+      disadvantage: !isDisadvantageValid,
+      comment: !isCommentValid,
+    });
+
+    const isReviewDataValid = isUserNameValid && isRatingValid && isAdvantageValid && isDisadvantageValid && isCommentValid;
+
+    if (isReviewDataValid) {
+      postReview({
+        guitarId,
+        userName: userNameRef.current?.value,
+        advantage: advantageRef.current?.value,
+        disadvantage: disadvantageRef.current?.value,
+        comment: commentRef.current?.value,
+        rating: +rating,
+      });
+
+      if (!error) {
+        setIsActive(false);
+        onPostSuccess(true);
+      }
+    }
+  };
+
   return (
     <FocusLock>
-      <div className={styles['modal-review']} ref={modalReview}>
+      <div className={styles['modal-review']}>
         <div className="modal is-active modal--review">
           <div className="modal__wrapper">
             <div
@@ -54,42 +144,78 @@ function ModalReview({ guitarName, setIsActive }: TProps): JSX.Element {
             <div className="modal__content">
               <h2 className="modal__header modal__header--review title title--medium">Оставить отзыв</h2>
               <h3 className="modal__product-name title title--medium-20 title--uppercase">{guitarName}</h3>
-              <form className="form-review">
+              <form
+                className="form-review"
+                onSubmit={onFormSubmit}
+              >
                 <div className="form-review__wrapper">
                   <div className="form-review__name-wrapper">
                     <label className="form-review__label form-review__label--required" htmlFor="user-name">Ваше Имя</label>
-                    <input className="form-review__input form-review__input--name" id="user-name" type="text" autoComplete="off"/>
-                    <span className="form-review__warning">Заполните поле</span>
+                    <input
+                      ref={userNameRef}
+                      className="form-review__input form-review__input--name"
+                      id="user-name"
+                      type="text"
+                      autoComplete="off"
+                      disabled={isLoading}
+                    />
+                    {isWarning.userName && <span className="form-review__warning">Заполните поле</span>}
                   </div>
-                  <div><span className="form-review__label form-review__label--required">Ваша Оценка</span>
+                  <div>
+                    <span className="form-review__label form-review__label--required">Ваша Оценка</span>
                     <div className="rate rate--reverse">
-                      <input className="visually-hidden" type="radio" id="star-5" name="rate" value="5"/>
-                      <label className="rate__label" htmlFor="star-5" title="Отлично"/>
-                      <input className="visually-hidden" type="radio" id="star-4" name="rate" value="4"/>
-                      <label className="rate__label" htmlFor="star-4" title="Хорошо"/>
-                      <input className="visually-hidden" type="radio" id="star-3" name="rate" value="3"/>
-                      <label className="rate__label" htmlFor="star-3" title="Нормально"/>
-                      <input className="visually-hidden" type="radio" id="star-2" name="rate" value="2"/>
-                      <label className="rate__label" htmlFor="star-2" title="Плохо"/>
-                      <input className="visually-hidden" type="radio" id="star-1" name="rate" value="1"/>
-                      <label className="rate__label" htmlFor="star-1" title="Ужасно"/>
-                      <span className="rate__count"></span><span className="rate__message">Поставьте оценку</span>
+                      {radioItems.map((item, index) => (
+                        <RateRadioInput
+                          key={item.id}
+                          ref={(input) => radioInputRefs.current[index] = input}
+                          data={item}
+                          isLoading={isLoading}
+                        />
+                      ))}
+                      {isWarning.rating && <span className="rate__message">Поставьте оценку</span>}
                     </div>
                   </div>
                 </div>
                 <label className="form-review__label" htmlFor="user-name">Достоинства</label>
-                <input className="form-review__input" id="pros" type="text" autoComplete="off"/>
+                <input
+                  ref={advantageRef}
+                  className="form-review__input"
+                  id="pros"
+                  type="text"
+                  autoComplete="off"
+                  disabled={isLoading}
+                />
+                {isWarning.advantage && <span className="form-review__warning">Заполните поле</span>}
                 <label className="form-review__label" htmlFor="user-name">Недостатки</label>
-                <input className="form-review__input" id="user-name" type="text" autoComplete="off"/>
+                <input
+                  ref={disadvantageRef}
+                  className="form-review__input"
+                  id="user-name"
+                  type="text"
+                  autoComplete="off"
+                  disabled={isLoading}
+                />
+                {isWarning.disadvantage && <span className="form-review__warning">Заполните поле</span>}
                 <label className="form-review__label" htmlFor="user-name">Комментарий</label>
-                <textarea className="form-review__input form-review__input--textarea" id="user-name" rows={10} autoComplete="off"/>
-                <button className="button button--medium-20 form-review__button" type="submit">Отправить отзыв</button>
+                <textarea
+                  ref={commentRef}
+                  className="form-review__input form-review__input--textarea"
+                  id="user-name"
+                  rows={10}
+                  autoComplete="off"
+                  disabled={isLoading}
+                />
+                {isWarning.comment && <span className="form-review__warning">Заполните поле</span>}
+                <button className="button button--medium-20 form-review__button" type="submit" disabled={isLoading}>
+                  {isLoading ? 'Загрузка...' : 'Отправить отзыв'}
+                </button>
               </form>
               <button
                 className="modal__close-btn button-cross"
                 type="button"
                 aria-label="Закрыть"
                 onClick={onCloseBtnClick}
+                disabled={isLoading}
               >
                 <span className="button-cross__icon"/><span className="modal__close-btn-interactive-area"/>
               </button>
