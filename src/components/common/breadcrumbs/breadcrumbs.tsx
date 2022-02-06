@@ -1,7 +1,11 @@
 import { AppRoute } from '../../../const';
 import { Link } from 'react-router-dom';
 
-function Breadcrumbs(): JSX.Element {
+type TProps = {
+  lastItemName?: string;
+}
+
+function Breadcrumbs({ lastItemName }: TProps): JSX.Element {
   return (
     <ul
       data-testid="breadcrumbs"
@@ -21,6 +25,13 @@ function Breadcrumbs(): JSX.Element {
           Каталог
         </Link>
       </li>
+      {lastItemName && (
+        <li className="breadcrumbs__item">
+          <Link className="link" to={''}>
+            {lastItemName}
+          </Link>
+        </li>
+      )}
     </ul>
   );
 }

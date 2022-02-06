@@ -2,6 +2,7 @@ import ProductRate, { RateType } from '../../../common/product-rate/product-rate
 import { formatPrice } from '../../../../utils/common';
 import { Link } from 'react-router-dom';
 import { TGuitarCard } from '../../../../types/app-data';
+import { AppRoute } from '../../../../const';
 
 type TProps = {
   card: TGuitarCard;
@@ -9,6 +10,7 @@ type TProps = {
 
 function ProductCard({ card }: TProps): JSX.Element {
   const {
+    id,
     name,
     previewImg,
     price,
@@ -43,10 +45,7 @@ function ProductCard({ card }: TProps): JSX.Element {
       <div className="product-card__buttons">
         <Link
           className="button button--mini"
-          to={''}
-          onClick={(evt) => {
-            evt.preventDefault();
-          }}
+          to={`${AppRoute.Product}/${id}`}
         >
           Подробнее
         </Link>

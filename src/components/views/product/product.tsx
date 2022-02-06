@@ -1,14 +1,14 @@
-import axios, { AxiosError } from 'axios';
 import Breadcrumbs from '../../common/breadcrumbs/breadcrumbs';
 import Loader from '../../common/loader/loader';
 import MainLayout from '../../common/main-layout/main-layout';
 import ProductDetail from './product-detail/product-detail';
-import Reviews from './reviews/reviews';
+import ReviewList from './review-list/review-list';
 import { APIRoute, createAPI } from '../../../services/api';
 import { AppRoute } from '../../../const';
 import { Redirect, useParams } from 'react-router-dom';
 import { TGuitarCard } from '../../../types/app-data';
 import { useEffect, useState } from 'react';
+import { useFetch } from '../../../hooks/use-fetch';
 
 const NOT_FOUND_STATUS_CODE = 404;
 
@@ -19,39 +19,21 @@ type TParams = {
 }
 
 function Product(): JSX.Element {
-  const [data, setData] = useState<TGuitarCard | null>(null);
-  const [error, setError] = useState<AxiosError | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [guitar, setGuitar] = useState<TGuitarCard | null>(null);
+  const { id: guitarId  } = useParams<TParams>();
 
-  const { id } = useParams<TParams>();
+  const [fetchGuitar, isLoading, error] = useFetch(
+    async (id: string) => {
+      const { data } = await api.get(`${APIRoute.Guitars}/${id}`);
+
+      setGuitar(data);
+    });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-
-        const response = await api.get(`${APIRoute.Guitars}/${id}`);
-        setData(response.data);
-      }
-      catch (err) {
-        if (axios.isAxiosError(err)) {
-          setError(err);
-        }
-      }
-      finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      setData(null);
-      setError(null);
-      setIsLoading(false);
-    };
-  }, [id]);
-
+    fetchGuitar(guitarId);
+  },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [guitarId]);
 
   if (error !== null && error.response?.status === NOT_FOUND_STATUS_CODE) {
     return <Redirect to={AppRoute.NotFound}/>;
@@ -61,14 +43,14 @@ function Product(): JSX.Element {
     <MainLayout>
       <main className="page-content">
         <div className="container">
-          <h1 className="page-content__title title title--bigger">Товар</h1>
-          <Breadcrumbs />
           {isLoading ? <Loader />
             :
-            data !== null && (
+            guitar !== null && (
               <>
-                <ProductDetail data={data}/>
-                <Reviews />
+                <h1 className="page-content__title title title--bigger">{guitar.name}</h1>
+                <Breadcrumbs lastItemName={guitar.name}/>
+                <ProductDetail data={guitar}/>
+                {guitarId  && <ReviewList guitarName={guitar.name} guitarId={guitarId}/>}
               </>
             )}
         </div>

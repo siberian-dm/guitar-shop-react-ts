@@ -5,6 +5,7 @@ const RATES = [1, 2, 3, 4, 5];
 export enum RateType {
   ProductCard,
   ProductPage,
+  ProductReview,
 }
 
 export const svgParams = {
@@ -15,6 +16,10 @@ export const svgParams = {
   [RateType.ProductPage]: {
     width: 14,
     height: 14,
+  },
+  [RateType.ProductReview]: {
+    width: 16,
+    height: 16,
   },
 };
 
@@ -32,6 +37,7 @@ function ProductRate({ rating, rateType, rateCount }: TProps): JSX.Element {
     {
       'product-card__rate': rateType === RateType.ProductCard,
       'product-container__rating': rateType === RateType.ProductPage,
+      'review__rating-panel': rateType === RateType.ProductReview,
     });
 
   return (
