@@ -46,6 +46,7 @@ function ModalSuccess({ setIsActive }: TProps): JSX.Element {
           <div className="modal__wrapper">
             <div
               className="modal__overlay"
+              data-testid="modal-overlay"
               data-close-modal
               onClick={onModalOverlayClick}
             />

@@ -8,7 +8,7 @@ export const mockSearchedGuitars = [
   {id: 4, name: 'guitar4'},
 ];
 
-const getMockComment = (guitarId: number) => ({
+export const getMockComment = (guitarId: number) => ({
   id: faker.datatype.uuid(),
   userName: faker.name.firstName(),
   advantage: faker.lorem.paragraph(),
@@ -19,7 +19,7 @@ const getMockComment = (guitarId: number) => ({
   guitarId,
 });
 
-const getMockGuitarCard = (id: number) => ({
+export const getMockGuitarCard = (id: number) => ({
   id,
   name: faker.random.arrayElement(['Честер Bass', 'CURT Z300', 'CURT Z300', 'Честер WX', 'Dania VX']),
   vendorCode: faker.datatype.uuid(),
@@ -31,7 +31,7 @@ const getMockGuitarCard = (id: number) => ({
   price: faker.datatype.number({min: 2000, max: 30000, precision: 50}),
 });
 
-const getMockComments = (guitarId: number): TComments => {
+export const getMockComments = (guitarId: number): TComments => {
   const commentCount = faker.datatype.number({min: 1, max: 10, precision: 1});
 
   return new Array(commentCount)

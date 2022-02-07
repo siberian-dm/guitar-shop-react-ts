@@ -1,7 +1,7 @@
+import API, { APIRoute } from '../../../../services/api';
 import FocusLock from 'react-focus-lock';
 import RateRadioInput from '../rate-radio-input/rate-radio-input';
 import styles from './modal-review.module.css';
-import { APIRoute, createAPI } from '../../../../services/api';
 import {
   FormEvent,
   useEffect,
@@ -11,8 +11,6 @@ import {
 import { TComment, TComments } from '../../../../types/app-data';
 import { toast } from 'react-toastify';
 import { useFetch } from '../../../../hooks/use-fetch';
-
-const api = createAPI();
 
 const radioItems = [
   {id: 'star-5', name: 'rate', value: 5, title: 'Отлично'},
@@ -52,7 +50,7 @@ function ModalReview({
   const radioInputRefs = useRef<(HTMLInputElement | null)[] | []>([]);
 
   const [postReview, isLoading, error] = useFetch(async (reviewData) => {
-    const { data } = await api.post<TComment>(APIRoute.Comments, reviewData);
+    const { data } = await API.post<TComment>(APIRoute.Comments, reviewData);
     setReviews((prev) => [data, ...prev]);
   });
 
@@ -138,7 +136,9 @@ function ModalReview({
         <div className="modal is-active modal--review">
           <div className="modal__wrapper">
             <div
-              className="modal__overlay" data-close-modal
+              className="modal__overlay"
+              data-testid="modal-overlay"
+              data-close-modal
               onClick={onModalOverlayClick}
             />
             <div className="modal__content">
