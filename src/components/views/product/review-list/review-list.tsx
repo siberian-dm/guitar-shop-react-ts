@@ -1,17 +1,15 @@
+import API, { APIRoute } from '../../../../services/api';
 import Loader from '../../../common/loader/loader';
 import ModalReview from '../modal-review/modal-review';
 import ModalSuccess from '../modal-success/modal-success';
 import ReviewItem from '../rewiew-item/review-item';
 import styles from './review-list.module.css';
-import { APIRoute, createAPI } from '../../../../services/api';
 import { MouseEvent, useEffect, useState } from 'react';
 import { QueryField, SortOrder, SortType } from '../../../../const';
 import { TComments } from '../../../../types/app-data';
 import { useFetch } from '../../../../hooks/use-fetch';
 
 const LOAD_LIMIT = 3;
-
-const api = createAPI();
 
 type TProps = {
   guitarName: string;
@@ -29,7 +27,7 @@ function ReviewList({ guitarName, guitarId }: TProps): JSX.Element {
       const firstIndexSlice = reviews.length;
       const secondIndexSlice = reviews.length + LOAD_LIMIT;
 
-      const { data, headers } = await api.get(
+      const { data, headers } = await API.get(
         `${APIRoute.Guitars}/${id}/comments`,
         {params: {
           [QueryField.Start]: firstIndexSlice,
@@ -61,7 +59,10 @@ function ReviewList({ guitarName, guitarId }: TProps): JSX.Element {
   const isShowMoreBtn = reviews.length < totalCount;
 
   return (
-    <section className="reviews">
+    <section
+      className="reviews"
+      data-testid="reviews"
+    >
       <h3 className="reviews__title title title--bigger">Отзывы</h3>
       <a
         className="button button--red-border button--big reviews__sumbit-button"

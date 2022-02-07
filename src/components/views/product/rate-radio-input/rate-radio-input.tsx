@@ -24,6 +24,7 @@ const RateRadioInput = forwardRef(
       />
       <label
         className="rate__label"
+        data-testid="rate-label"
         htmlFor={data.id}
         title={data.title}
       />

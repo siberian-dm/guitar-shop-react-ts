@@ -42,8 +42,8 @@ function ProductRate({ rating, rateType, rateCount }: TProps): JSX.Element {
 
   return (
     <div
-      data-testid="product-rate"
       className={rateClass}
+      data-testid="product-rate"
       aria-hidden="true"
     >
       <span className="visually-hidden">Рейтинг:</span>

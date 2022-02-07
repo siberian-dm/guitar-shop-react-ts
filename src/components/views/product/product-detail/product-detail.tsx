@@ -3,9 +3,9 @@ import ProductRate, { RateType } from '../../../common/product-rate/product-rate
 import { formatPrice } from '../../../../utils/common';
 import { GuitarType } from '../../../../const';
 import { MouseEvent, useState } from 'react';
-import { TGuitarCard } from '../../../../types/app-data';
+import { TGuitar } from '../../../../types/app-data';
 
-const productTypes: {[key: string]: string} = {
+export const productTypes: {[key: string]: string} = {
   [GuitarType.Acoustic]: 'Акустическая гитара',
   [GuitarType.Electric]: 'Электрогитара',
   [GuitarType.Ukulele]: 'Укулеле',
@@ -17,7 +17,7 @@ enum TabName {
 }
 
 type TProps = {
-  data: TGuitarCard;
+  data: TGuitar;
 }
 
 function ProductDetail({ data }: TProps): JSX.Element {
@@ -61,7 +61,10 @@ function ProductDetail({ data }: TProps): JSX.Element {
     });
 
   return (
-    <div className="product-container">
+    <div
+      className="product-container"
+      data-testid="product-detail"
+    >
       <img className="product-container__img" src={adaptedPreviewImg} width="90" height="235" alt={name}/>
       <div className="product-container__info-wrapper">
         <h2 className="product-container__title title title--big title--uppercase">{name}</h2>
@@ -85,7 +88,10 @@ function ProductDetail({ data }: TProps): JSX.Element {
             Описание
           </a>
           <div className="tabs__content" id="characteristics">
-            <table className={tabsTableClass}>
+            <table
+              className={tabsTableClass}
+              data-testid="characteristics"
+            >
               <tbody>
                 <tr className="tabs__table-row">
                   <td className="tabs__title">Артикул:</td>
@@ -101,7 +107,10 @@ function ProductDetail({ data }: TProps): JSX.Element {
                 </tr>
               </tbody>
             </table>
-            <p className={tabsDescriptionClass}>
+            <p
+              className={tabsDescriptionClass}
+              data-testid="description"
+            >
               {description}
             </p>
           </div>
