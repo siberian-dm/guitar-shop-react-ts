@@ -19,7 +19,7 @@ const getMockComment = (guitarId: number) => ({
   guitarId,
 });
 
-const getMockGuitarCard = (id: number) => ({
+export const getMockGuitarCard = (id: number) => ({
   id,
   name: faker.random.arrayElement(['Честер Bass', 'CURT Z300', 'CURT Z300', 'Честер WX', 'Dania VX']),
   vendorCode: faker.datatype.uuid(),
