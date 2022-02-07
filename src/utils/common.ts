@@ -1,7 +1,10 @@
 const BASE = 10;
+const ONE_MILLION = 1e6;
+const ONE_THOUSAND = 1000;
+const NUMBER_COUNT = 3;
 
-const fillZero = (num: number, places: number) => {
-  const zeroCount = places - num.toString().length;
+const fillZero = (num: number) => {
+  const zeroCount = NUMBER_COUNT - num.toString().length;
 
   return zeroCount > 0
     ? `${Array(zeroCount).fill(0).join('')}${num}`
@@ -9,22 +12,22 @@ const fillZero = (num: number, places: number) => {
 };
 
 export const formatPrice = (price: number) => {
-  const millions = Math.floor(price / 1e6);
-  const thousands = Math.floor(price % 1e6 / 1000);
-  const hundreds = price % 1000;
+  const millions = Math.floor(price / ONE_MILLION);
+  const thousands = Math.floor(price % ONE_MILLION / ONE_THOUSAND);
+  const hundreds = price % ONE_THOUSAND;
 
   const priceInMillions = millions !==0 ? millions : '';
 
   let priceInThousands: string | number;
 
   if (millions !==0) {
-    priceInThousands = fillZero(thousands, 3);
+    priceInThousands = fillZero(thousands);
   }
   else {
-    priceInThousands = thousands !==0 ? thousands : '';
+    priceInThousands = thousands !== 0 ? thousands : '';
   }
 
-  const priceInHundreds = millions !== 0 || thousands !==0 ? fillZero(hundreds, 3) : hundreds;
+  const priceInHundreds = millions !== 0 || thousands !== 0 ? fillZero(hundreds) : hundreds;
 
   return `${priceInMillions} ${priceInThousands} ${priceInHundreds} ₽`.trim();
 };
