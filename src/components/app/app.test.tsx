@@ -4,7 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { AppRoute } from '../../const';
 import { configureMockStore } from '@jedmao/redux-mock-store';
 import { createMemoryHistory } from 'history';
-import { getMockGuitarCard } from '../../mocks/app-mock-data';
+import { getMockGuitarCardsWithComments } from '../../mocks/app-mock-data';
 import { initialState as catalogInitialState } from '../../store/reducers/catalog-slice/catalog-slice';
 import { initialState as searchFormInitialState } from '../../store/reducers/search-slice/search-slice';
 import { Provider } from 'react-redux';
@@ -19,12 +19,12 @@ const store = mockStore({
   [ReducerName.Search]: {...searchFormInitialState},
 });
 
-const mockGuitar = getMockGuitarCard(1);
+const mockGuitar = getMockGuitarCardsWithComments(1)[0];
 
 const mockAPI = new MockAdapter(API);
 
 mockAPI
-  .onGet(`${APIRoute.Guitars}/1`)
+  .onGet(`${APIRoute.Guitars}/1?_embed=comments`)
   .reply(200, mockGuitar);
 
 store.dispatch = jest.fn();

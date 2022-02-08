@@ -1,10 +1,10 @@
 import ModalSuccess from './modal-success';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
-const mockSetIsActive = jest.fn();
+const mockOnClose = jest.fn();
 
 const fakeModalSuccess = (
-  <ModalSuccess setIsActive={mockSetIsActive}/>
+  <ModalSuccess onClose={mockOnClose}/>
 );
 
 describe('Component: ModalSuccess', () => {
@@ -16,16 +16,25 @@ describe('Component: ModalSuccess', () => {
     expect(screen.getByLabelText('Закрыть')).toBeInTheDocument();
   });
 
-  test('should calls mockSetIsActive on buttons click and overlay click', () => {
+  test('should calls mockSetIsActive on buttons click and overlay click', async () => {
     render(fakeModalSuccess);
 
     fireEvent.click(screen.getByText('К покупкам!'));
-    expect(mockSetIsActive).toBeCalledTimes(1);
+
+    await waitFor(() => {
+      expect(mockOnClose).toBeCalledTimes(1);
+    });
 
     fireEvent.click(screen.getByLabelText('Закрыть'));
-    expect(mockSetIsActive).toBeCalledTimes(2);
+
+    await waitFor(() => {
+      expect(mockOnClose).toBeCalledTimes(2);
+    });
 
     fireEvent.click(screen.getByTestId('modal-overlay'));
-    expect(mockSetIsActive).toBeCalledTimes(3);
+
+    await waitFor(() => {
+      expect(mockOnClose).toBeCalledTimes(3);
+    });
   });
 });

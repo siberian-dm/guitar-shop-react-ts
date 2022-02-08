@@ -17,8 +17,14 @@ mockAPI
   .onGet(`${APIRoute.Guitars}/${guitarId2}/comments`)
   .reply(200, []);
 
+const mockFetchGuitar = jest.fn();
+
 const fakeReviewList = (guitarId: number) => (
-  <ReviewList guitarName="ROMAN LX" guitarId={guitarId.toString()}/>
+  <ReviewList
+    guitarName="ROMAN LX"
+    guitarId={guitarId.toString()}
+    fetchGuitar={mockFetchGuitar}
+  />
 );
 
 describe('Component: ReviewList', () => {

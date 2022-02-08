@@ -3,7 +3,7 @@ import ProductRate, { RateType } from '../../../common/product-rate/product-rate
 import { formatPrice } from '../../../../utils/common';
 import { GuitarType } from '../../../../const';
 import { MouseEvent, useState } from 'react';
-import { TGuitar } from '../../../../types/app-data';
+import { TGuitarCard } from '../../../../types/app-data';
 
 export const productTypes: {[key: string]: string} = {
   [GuitarType.Acoustic]: 'Акустическая гитара',
@@ -17,7 +17,7 @@ enum TabName {
 }
 
 type TProps = {
-  data: TGuitar;
+  data: TGuitarCard;
 }
 
 function ProductDetail({ data }: TProps): JSX.Element {
@@ -32,6 +32,7 @@ function ProductDetail({ data }: TProps): JSX.Element {
     stringCount,
     rating,
     price,
+    comments,
   } = data;
 
   const adaptedPreviewImg = previewImg.replace('img/', '/img/content/');
@@ -71,6 +72,7 @@ function ProductDetail({ data }: TProps): JSX.Element {
         <ProductRate
           rating={rating}
           rateType={RateType.ProductPage}
+          rateCount={comments.length}
         />
         <div className="tabs">
           <a
