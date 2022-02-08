@@ -8,7 +8,7 @@ import {
   useRef,
   useState
 } from 'react';
-import { TComment, TComments } from '../../../../types/app-data';
+import { TComment } from '../../../../types/app-data';
 import { toast } from 'react-toastify';
 import { useFetch } from '../../../../hooks/use-fetch';
 
@@ -23,16 +23,14 @@ const radioItems = [
 type TProps = {
   guitarId: number;
   guitarName: string;
-  setIsActive: (isActive: boolean) => void;
-  setReviews: React.Dispatch<React.SetStateAction<TComments | []>>;
-  onPostSuccess: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
+  onPostSuccess: () => void;
 }
 
 function ModalReview({
   guitarId,
   guitarName,
-  setIsActive,
-  setReviews,
+  onClose,
   onPostSuccess,
 }: TProps): JSX.Element {
   const [isWarning, setIsWarning] = useState({
@@ -50,8 +48,7 @@ function ModalReview({
   const radioInputRefs = useRef<(HTMLInputElement | null)[] | []>([]);
 
   const [postReview, isLoading, error] = useFetch(async (reviewData) => {
-    const { data } = await API.post<TComment>(APIRoute.Comments, reviewData);
-    setReviews((prev) => [data, ...prev]);
+    await API.post<TComment>(APIRoute.Comments, reviewData);
   });
 
   useEffect(() => {
@@ -66,7 +63,7 @@ function ModalReview({
     const onEscKeyDown = (evt: KeyboardEvent) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
-        setIsActive(false);
+        onClose();
       }
     };
 
@@ -75,7 +72,7 @@ function ModalReview({
     return () => {
       document.removeEventListener('keydown', onEscKeyDown);
     };
-  }, [setIsActive]);
+  }, [onClose]);
 
   useEffect(() => {
     if (error) {
@@ -85,12 +82,12 @@ function ModalReview({
 
   const onModalOverlayClick = () => {
     if (!isLoading) {
-      setIsActive(false);
+      onClose();
     }
   };
 
   const onCloseBtnClick = () => {
-    setIsActive(false);
+    onClose();
   };
 
   const onFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
@@ -124,8 +121,8 @@ function ModalReview({
       });
 
       if (!error) {
-        setIsActive(false);
-        onPostSuccess(true);
+        onClose();
+        onPostSuccess();
       }
     }
   };

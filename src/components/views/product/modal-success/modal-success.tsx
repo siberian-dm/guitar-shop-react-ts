@@ -3,10 +3,10 @@ import FocusLock from 'react-focus-lock';
 import styles from './modal-success.module.css';
 
 type TProps = {
-  setIsActive: (isActive: boolean) => void;
+  onClose: () => void;
 }
 
-function ModalSuccess({ setIsActive }: TProps): JSX.Element {
+function ModalSuccess({ onClose }: TProps): JSX.Element {
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -20,7 +20,7 @@ function ModalSuccess({ setIsActive }: TProps): JSX.Element {
     const onEscKeyDown = (evt: KeyboardEvent) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
-        setIsActive(false);
+        onClose();
       }
     };
 
@@ -29,14 +29,14 @@ function ModalSuccess({ setIsActive }: TProps): JSX.Element {
     return () => {
       document.removeEventListener('keydown', onEscKeyDown);
     };
-  }, [setIsActive]);
+  }, [onClose]);
 
   const onModalOverlayClick = () => {
-    setIsActive(false);
+    onClose();
   };
 
   const onCloseBtnClick = () => {
-    setIsActive(false);
+    onClose();
   };
 
   return (

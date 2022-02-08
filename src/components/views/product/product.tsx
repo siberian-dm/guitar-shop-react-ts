@@ -22,7 +22,7 @@ function Product(): JSX.Element {
 
   const [fetchGuitar, isLoading, error] = useFetch(
     async (id: string) => {
-      const { data } = await API.get(`${APIRoute.Guitars}/${id}`);
+      const { data } = await API.get(`${APIRoute.Guitars}/${id}?_embed=comments`);
 
       setGuitar(data);
     });
@@ -50,7 +50,13 @@ function Product(): JSX.Element {
                 </h1>
                 <Breadcrumbs lastItemName={guitar.name}/>
                 <ProductDetail data={guitar}/>
-                {guitarId  && <ReviewList guitarName={guitar.name} guitarId={guitarId}/>}
+                {guitarId  && (
+                  <ReviewList
+                    guitarName={guitar.name}
+                    guitarId={guitarId}
+                    fetchGuitar={fetchGuitar}
+                  />
+                )}
               </>
             )}
         </div>

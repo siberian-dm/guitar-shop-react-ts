@@ -5,8 +5,7 @@ import userEvent from '@testing-library/user-event';
 import {
   fireEvent,
   render,
-  screen,
-  waitFor
+  screen
 } from '@testing-library/react';
 
 const GUITAR_ID = 1;
@@ -28,16 +27,14 @@ mockAPI
   .onPost(APIRoute.Comments, mockReviewData)
   .reply(200, {});
 
-const mockSetIsActive = jest.fn();
-const mockSetReviews = jest.fn();
+const mockOnClose = jest.fn();
 const mockOnPostSucces = jest.fn();
 
 const fakeModalReview = (
   <ModalReview
     guitarId={GUITAR_ID}
     guitarName={GUITAR_NAME}
-    setReviews={mockSetReviews}
-    setIsActive={mockSetIsActive}
+    onClose={mockOnClose}
     onPostSuccess={mockOnPostSucces}
   />
 );
@@ -63,10 +60,10 @@ describe('Component: ModalReview', () => {
     render(fakeModalReview);
 
     fireEvent.click(screen.getByLabelText('Закрыть'));
-    expect(mockSetIsActive).toBeCalledTimes(1);
+    expect(mockOnClose).toBeCalledTimes(1);
 
     fireEvent.click(screen.getByTestId('modal-overlay'));
-    expect(mockSetIsActive).toBeCalledTimes(2);
+    expect(mockOnClose).toBeCalledTimes(2);
   });
 
   test('should show warnings when fields are empty on form submission', () => {
@@ -80,11 +77,11 @@ describe('Component: ModalReview', () => {
     expect(warnings.length).toEqual(textInputs.length);
     expect(screen.getByText('Поставьте оценку')).toBeInTheDocument();
 
-    expect(mockSetIsActive).not.toBeCalled();
+    expect(mockOnClose).not.toBeCalled();
     expect(mockOnPostSucces).not.toBeCalled();
   });
 
-  test('should call mockSetIsActive, mockSetReviews, mockOnPostSucces on form submission', async () => {
+  test('should call mockSetIsActive, mockSetReviews, mockOnPostSucces on form submission', () => {
     render(fakeModalReview);
 
     const textInputs = screen.getAllByRole('textbox');
@@ -98,11 +95,7 @@ describe('Component: ModalReview', () => {
 
     fireEvent.click(screen.getByText('Отправить отзыв'));
 
-    expect(mockSetIsActive).toBeCalledTimes(1);
+    expect(mockOnClose).toBeCalledTimes(1);
     expect(mockOnPostSucces).toBeCalledTimes(1);
-
-    await waitFor(() => {
-      expect(mockSetReviews).toBeCalledTimes(1);
-    });
   });
 });

@@ -14,9 +14,11 @@ const LOAD_LIMIT = 3;
 type TProps = {
   guitarName: string;
   guitarId: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fetchGuitar: (...args: any[]) => Promise<void>;
 }
 
-function ReviewList({ guitarName, guitarId }: TProps): JSX.Element {
+function ReviewList({ guitarName, guitarId, fetchGuitar }: TProps): JSX.Element {
   const [reviews, setReviews] = useState<TComments | []>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [isModalReviewActive, setIsModalReviewActive] = useState(false);
@@ -54,6 +56,19 @@ function ReviewList({ guitarName, guitarId }: TProps): JSX.Element {
   const onReviewBtnClick = (evt: MouseEvent) => {
     evt.preventDefault();
     setIsModalReviewActive(true);
+  };
+
+  const onModalReviewClose = () => {
+    setIsModalReviewActive(false);
+  };
+
+  const onPostReviewSuccess = () => {
+    setIsModalSuccessActive(true);
+  };
+
+  const onModalSuccessClose = () => {
+    setIsModalSuccessActive(false);
+    fetchGuitar(guitarId);
   };
 
   const isShowMoreBtn = reviews.length < totalCount;
@@ -94,14 +109,13 @@ function ReviewList({ guitarName, guitarId }: TProps): JSX.Element {
         <ModalReview
           guitarId={+guitarId}
           guitarName={guitarName}
-          setIsActive={setIsModalReviewActive}
-          setReviews={setReviews}
-          onPostSuccess={setIsModalSuccessActive}
+          onClose={onModalReviewClose}
+          onPostSuccess={onPostReviewSuccess}
         />
       )}
       {isModalSuccessActive && (
         <ModalSuccess
-          setIsActive={setIsModalSuccessActive}
+          onClose={onModalSuccessClose}
         />
       )}
     </section>

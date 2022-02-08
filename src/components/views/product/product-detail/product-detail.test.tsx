@@ -1,9 +1,9 @@
 import ProductDetail, { productTypes } from './product-detail';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { formatPrice } from '../../../../utils/common';
-import { getMockGuitarCard } from '../../../../mocks/app-mock-data';
+import { getMockGuitarCardsWithComments } from '../../../../mocks/app-mock-data';
 
-const mockGuitar = getMockGuitarCard(1);
+const mockGuitar = getMockGuitarCardsWithComments(1)[0];
 
 const fakeProductDetail = (<ProductDetail data={mockGuitar}/>);
 
