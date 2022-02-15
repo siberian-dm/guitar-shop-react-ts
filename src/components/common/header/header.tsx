@@ -1,9 +1,17 @@
+import classNames from 'classnames';
 import Logo, { LogoType } from '../logo/logo';
 import Search from './search/search';
 import { AppRoute } from '../../../const';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function Header(): JSX.Element {
+  const location = useLocation();
+
+  const setNavItemClass = (path: string) => classNames(
+    'link main-nav__link',
+    {'link--current': location.pathname.includes(path)},
+  );
+
   return (
     <header className="header" id="header" data-testid="header">
       <div className="container header__wrapper">
@@ -12,7 +20,7 @@ function Header(): JSX.Element {
           <ul className="main-nav__list">
             <li>
               <Link
-                className="link main-nav__link link--current"
+                className={setNavItemClass(AppRoute.CatalogPage)}
                 to={AppRoute.CatalogInitialPage}
               >
                 Каталог
@@ -45,14 +53,11 @@ function Header(): JSX.Element {
         <Search />
         <Link
           className="header__cart-link"
-          to={''}
+          to={AppRoute.Cart}
           aria-label="Корзина"
-          onClick={(evt) => {
-            evt.preventDefault();
-          }}
         >
           <svg className="header__cart-icon" width="14" height="14" aria-hidden="true">
-            <use xlinkHref="#icon-basket"></use>
+            <use xlinkHref="#icon-basket"/>
           </svg>
           <span className="visually-hidden">Перейти в корзину</span>
           <span className="header__cart-count">2</span>
