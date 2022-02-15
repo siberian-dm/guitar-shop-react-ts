@@ -1,3 +1,4 @@
+import Cart from '../views/cart/cart';
 import Catalog from '../views/catalog/catalog';
 import NotFound from '../views/not-found/not-found';
 import Product from '../views/product/product';
@@ -17,6 +18,9 @@ function App(): JSX.Element {
         </Route>
         <Route path={AppRoute.ProductById} exact>
           <Product />
+        </Route>
+        <Route path={AppRoute.Cart} exact>
+          <Cart />
         </Route>
         <Route path={AppRoute.NotFound} exact>
           <NotFound />

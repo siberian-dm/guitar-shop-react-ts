@@ -11,6 +11,7 @@ export enum AppRoute {
   CatalogInitialPage = '/catalog/page_1',
   Product = '/product',
   ProductById = '/product/:id',
+  Cart = '/cart',
   NotFound = '/not_found'
 }
 

@@ -22,7 +22,9 @@ export type TGuitarCard = {
   comments: TComments;
 }
 
+export type TCartGuitar = Omit<TGuitarCard, 'comments' | 'rating' | 'description'>;
 export type TSearchedGuitar = Pick<TGuitarCard, 'id' | 'name'>;
+export type TCartGuitars = TCartGuitar[];
 export type TGuitarCards = TGuitarCard[];
 export type TComments = TComment[];
 export type TSearchedGuitars = TSearchedGuitar[];

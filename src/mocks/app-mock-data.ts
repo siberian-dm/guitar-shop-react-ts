@@ -1,5 +1,5 @@
 import faker from 'faker';
-import { TComments, TGuitarCards } from '../types/app-data';
+import { TCartGuitars, TComments, TGuitarCards } from '../types/app-data';
 
 export const mockSearchedGuitars = [
   {id: 1, name: 'guitar1'},
@@ -31,6 +31,16 @@ export const getMockGuitarCard = (id: number) => ({
   price: faker.datatype.number({min: 2000, max: 30000, precision: 50}),
 });
 
+export const getMockCartGuitar = (id: number) => ({
+  id,
+  name: faker.random.arrayElement(['Честер Bass', 'CURT Z300', 'CURT Z300', 'Честер WX', 'Dania VX']),
+  vendorCode: faker.datatype.uuid(),
+  type: faker.random.arrayElement(['acoustic', 'electric', 'ukulele']),
+  previewImg: faker.random.arrayElement(['img/guitar-1.jpg', 'img/guitar-2.jpg', 'img/guitar-3.jpg']),
+  stringCount: faker.random.arrayElement([4, 6, 7, 12]),
+  price: faker.datatype.number({min: 2000, max: 30000, precision: 50}),
+});
+
 export const getMockComments = (guitarId: number): TComments => {
   const commentCount = faker.datatype.number({min: 1, max: 10, precision: 1});
 
@@ -38,6 +48,10 @@ export const getMockComments = (guitarId: number): TComments => {
     .fill(null)
     .map(() => getMockComment(guitarId));
 };
+
+export const getMockCartGuitars = (cardCount = 3): TCartGuitars => new Array(cardCount)
+  .fill(null)
+  .map((_val, index) => getMockCartGuitar(index));
 
 export const getMockGuitarCardsWithComments = (cardCount = 15): TGuitarCards => new Array(cardCount)
   .fill(null)
